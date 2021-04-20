@@ -6,6 +6,8 @@ This repository serves as the provider of an Terraform Application which deploys
 
 * [🧑‍💻 Development - Requirements](#requirements)
 * [🧑‍💻 Development - Getting Started](#getting-started-🏃‍♀️)
+* [🧑‍💻 Development - Makefile goodness](#makefile-goodness)
+* [🚀 Deployment - Standard Deployments](#standard-deployments)
 
 # Development
 
@@ -163,3 +165,52 @@ A `deployment.tfvars.json` file is expected at the root of the repository to sto
 ```
 
 An example called `example.tfvars.json` is available for you to copy, rename, and fill out accordingly.
+
+## Makefile goodness
+
+A `Makefile` is available in the root of the repository to abstract away commonly used commands for development:
+
+**`make init`**
+
+> This will run `terraform init` within the `terraform/` directory, installing any providers required for deployment
+
+**`make lint`**
+
+> This will run `terraform validate` within the `terraform/` directory, showing you anything that is incorrect in your Terraform scripts
+
+**`make format`**
+
+> This will run `terraform fmt` within the `terraform/` directory, this **will** modify files if issues were found
+
+**`make plan`**
+
+> This will run `terraform plan` within the `terraform/` directory using the contents of your `deployment.tfvars.json` file
+
+**`make apply`**
+
+> This will run `terraform apply` within the `terraform/` directory using the contents of your `deployment.tfvars.json` file. The deployment is auto-approved, so **make sure** you know what you're changing with your deployment first! (Best to run `make plan` to check!)
+
+**`make destroy`**
+
+> This will run `terraform destroy` within the `terraform/` directory using the contents of your `deployment.tfvars.json` file. The destroy is auto-approved, so **make sure** you know what you're destroying first!
+
+# Deployment
+
+## Standard Deployments
+
+For standard deploys, you can check _what_ you'll be deploying by running:
+
+```bash
+$ make plan # Outputs the result of `terraform plan`
+```
+
+To deploy the infrastructure, you can run:
+
+```bash
+$ make apply # Deploys the Bakery
+```
+
+To destroy the infrastructure, you can run:
+
+```bash
+$ make destroy # Destroys the Baker

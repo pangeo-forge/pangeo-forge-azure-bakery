@@ -1,6 +1,6 @@
-.PHONEY: install lint format plan apply destroy
+.PHONEY: init lint format plan apply destroy
 
-install:
+init:
 	terraform -chdir="terraform/" init
 
 lint:
