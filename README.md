@@ -158,9 +158,7 @@ A `deployment.tfvars.json` file is expected at the root of the repository to sto
 {
     "owner": "<your-name>",
     "identifier": "<a-unique-value-to-tie-to-your-deployment>",
-    "region": "<azure-region-name-to-deploy-to>",
-    "appId": "<value-of-appId-from-earlier>",
-    "password": "<value-of-password-from-earlier>"
+    "region": "<azure-region-name-to-deploy-to>"
 }
 ```
 
