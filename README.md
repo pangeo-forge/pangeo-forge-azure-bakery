@@ -16,6 +16,7 @@ This repository serves as the provider of an Terraform Application which deploys
 To develop on this project, you should have the following installed:
 
 * [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+* [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 * [Terraform 0.15.0](https://www.terraform.io/downloads.html)
 
 If you're developing on MacOS, all of the above can be installed using [homebrew](https://brew.sh/)
@@ -70,8 +71,6 @@ $ az ad sp create-for-rbac --name "<name-for-your-service-principal>"
   "tenant": "<a-tenant-id>"
 }
 ```
-
-Keep note of the values of `appId` and `password`.
 
 #### Adding Service Principal permissions
 
@@ -192,6 +191,10 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 
 > This will run `terraform destroy` within the `terraform/` directory using the contents of your `deployment.tfvars.json` file. The destroy is auto-approved, so **make sure** you know what you're destroying first!
 
+**`make configure-kubectl`**
+
+> This will setup `kubectl` to point to your deployed AKS cluster using the output variables terraform creates. You **must** have deployed the cluster first.
+
 # Deployment
 
 ## Standard Deployments
@@ -202,13 +205,15 @@ For standard deploys, you can check _what_ you'll be deploying by running:
 $ make plan # Outputs the result of `terraform plan`
 ```
 
-To deploy the infrastructure, you can run:
+To deploy the infrastructure, you can run (commands are line by line for brevity, you can chain them with `$ make <command> <command> <command>`):
 
 ```bash
 $ make apply # Deploys the Bakery
+$ make configure-kubectl # Uses the output from Terraform to configure kubectl to point to the newly deployed cluster
+$ make create-agent # Creates the Prefect Agent on the cluster using the `prefect_agent_conf.yaml` file
 ```
 
 To destroy the infrastructure, you can run:
 
 ```bash
-$ make destroy # Destroys the Baker
+$ make destroy # Destroys the Bakery

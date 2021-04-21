@@ -1,4 +1,4 @@
-.PHONEY: init lint format plan apply destroy
+.PHONEY: init lint format plan apply destroy configure-kubectl
 
 init:
 	terraform -chdir="terraform/" init
@@ -17,3 +17,6 @@ apply:
 
 destroy:
 	terraform -chdir="terraform/" destroy -auto-approve -var-file="../deployment.tfvars.json"
+
+configure-kubectl:
+	az aks get-credentials --resource-group $$(terraform -chdir="terraform" output -raw bakery_resource_group_name) --name $$(terraform -chdir="terraform" output -raw bakery_cluster_name)
