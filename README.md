@@ -176,6 +176,9 @@ TF_VAR_identifier="<a-unique-value-to-tie-to-your-deployment>"
 TF_VAR_region="<azure-region-name-to-deploy-to>"
 BAKERY_NAMESPACE="<the-name-for-your-prefect-agent-k8s-configs-namespace>"
 PREFECT__CLOUD__AGENT__AUTH_TOKEN="<value-of-runner-token>" # See https://docs.prefect.io/orchestration/agents/overview.html#tokens - This is required for your Agent to communicate to Prefect Cloud
+PREFECT__CLOUD__AUTH_TOKEN="<value-of-tenant-token>" # See https://docs.prefect.io/orchestration/concepts/tokens.html#tenant - This is used to support flow registration
+PREFECT_PROJECT="<name-of-a-prefect-project>" # See https://docs.prefect.io/orchestration/concepts/projects.html#creating-a-project - This is where the bakery's test flows will be registered
+PREFECT__CLOUD__AGENT__LABELS="<a-set-of-prefect-agent-labels>" # See https://docs.prefect.io/orchestration/agents/overview.html#labels - These will be registered with the deployed agent to limit which flows should be executed by the agent
 ```
 
 An example called `example.env` is available for you to copy, rename, and fill out accordingly.
