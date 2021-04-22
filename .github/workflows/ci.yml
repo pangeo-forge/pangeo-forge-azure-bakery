@@ -15,10 +15,6 @@ jobs:
         with:
           terraform_version: 0.15.0
 
-      - name: Initialising
-        run: |
-          make init
-
       - name: Linting
         run: |
           make lint

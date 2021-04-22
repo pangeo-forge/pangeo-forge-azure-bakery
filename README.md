@@ -15,6 +15,8 @@ This repository serves as the provider of an Terraform Application which deploys
 
 To develop on this project, you should have the following installed:
 
+* [Python 3.8.*](https://www.python.org/downloads/) (We recommend using [Pyenv](https://github.com/pyenv/pyenv) to handle Python versions)
+* [Poetry](https://github.com/python-poetry/poetry)
 * [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 * [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 * [Terraform 0.15.0](https://www.terraform.io/downloads.html)
@@ -26,9 +28,24 @@ If you're developing on Windows, we'd recommend using either [Git BASH](https://
 
 ## Getting Started 🏃‍♀️
 
+### Installing dependencies
+
+This project requires some Python dependencies (Namely `prefect` and `dotenv`), these are so that:
+
+* We can register flows for testing (it was also used to generate `prefect_agent_conf.yaml`)
+* We can use `.env` files to provide both Prefect Flows and Terraform environment variables
+
+To install the dependencies, run either:
+
+```bash
+$ make install # For deploying the infrastructure only
+# or
+$ make install-dev # For developing on this project
+```
+
 ### Azure Credential setup
 
-To develop and deploy this project, you will first need to setup some credentials and permissions on Azure; before doing this ensure you've installed the [requirements](#requirements) listed above.
+To develop and deploy this project, you will first need to setup some credentials and permissions on Azure
 
 #### Logging in
 
@@ -149,23 +166,31 @@ $ az role assignment create --assignee "<objectId>" --role  "Azure Kubernetes Se
 
 You should now be setup with the correct permissions to deploy the infrastructure onto Azure. Further reading on Azure Service Principals can be found [here](https://docs.microsoft.com/en-us/cli/azure/ad/sp?view=azure-cli-latest).
 
-### `deployment.tfvars.json` file
+### `.env` file
 
-A `deployment.tfvars.json` file is expected at the root of the repository to store variables used within deployment, the expected values are:
+A `.env` file is expected at the root of the repository to store variables used within deployment, the expected values are:
 
 ```bash
-{
-    "owner": "<your-name>",
-    "identifier": "<a-unique-value-to-tie-to-your-deployment>",
-    "region": "<azure-region-name-to-deploy-to>"
-}
+TF_VAR_owner="<your-name>"
+TF_VAR_identifier="<a-unique-value-to-tie-to-your-deployment>"
+TF_VAR_region="<azure-region-name-to-deploy-to>"
+BAKERY_NAMESPACE="<the-name-for-your-prefect-agent-k8s-configs-namespace>"
+PREFECT__CLOUD__AGENT__AUTH_TOKEN="<value-of-runner-token>" # See https://docs.prefect.io/orchestration/agents/overview.html#tokens - This is required for your Agent to communicate to Prefect Cloud
 ```
 
-An example called `example.tfvars.json` is available for you to copy, rename, and fill out accordingly.
+An example called `example.env` is available for you to copy, rename, and fill out accordingly.
 
 ## Makefile goodness
 
 A `Makefile` is available in the root of the repository to abstract away commonly used commands for development:
+
+**`make install`**
+
+> This will run `poetry install --no-dev` with the contents of `poetry.lock` - Use this if you only want to deploy the infrastructure
+
+**`make install-dev`**
+
+> This will run `poetry install` with the contents of `poetry.lock` - Use this if you're developing this project
 
 **`make init`**
 
@@ -193,9 +218,15 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 
 **`make configure-kubectl`**
 
-> This will setup `kubectl` to point to your deployed AKS cluster using the output variables terraform creates. You **must** have deployed the cluster first.
+> This will setup `kubectl` to point to your deployed AKS cluster using the output variables terraform creates. You **must** have deployed the cluster first
+
+**`make setup-agent`**
+
+> This will create a namespace on the AKS cluster with the name of `BAKERY_NAMESPACE`, then the agent configuration in `prefect_agent_conf.yaml` will be applied to the cluster. You **must** have deployed the cluster first
 
 # Deployment
+
+Before you deploy the infrastructure, ensure you've taken all the steps outlined under [Azure Credential setup](#azure-credential-setup) and have run [`make install`](#makefile-goodness)
 
 ## Standard Deployments
 
@@ -205,12 +236,18 @@ For standard deploys, you can check _what_ you'll be deploying by running:
 $ make plan # Outputs the result of `terraform plan`
 ```
 
-To deploy the infrastructure, you can run (commands are line by line for brevity, you can chain them with `$ make <command> <command> <command>`):
+To deploy the infrastructure, you can run:
 
 ```bash
 $ make apply # Deploys the Bakery
 $ make configure-kubectl # Uses the output from Terraform to configure kubectl to point to the newly deployed cluster
-$ make create-agent # Creates the Prefect Agent on the cluster using the `prefect_agent_conf.yaml` file
+$ make setup-agent # This will create a namespace on the AKS cluster with the name of `BAKERY_NAMESPACE`, then the agent configuration in `prefect_agent_conf.yaml` will be applied to the cluster
+```
+
+You could also chain the above commands in one line:
+
+```bash
+$ make apply configure-kubectl setup-agent
 ```
 
 To destroy the infrastructure, you can run:

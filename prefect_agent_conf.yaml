@@ -23,11 +23,11 @@ spec:
         - -c
         env:
         - name: PREFECT__CLOUD__AGENT__AUTH_TOKEN
-          value: K-BGZSKVJSSyRRxkZ--CzQ
+          value: ${PREFECT__CLOUD__AGENT__AUTH_TOKEN}
         - name: PREFECT__CLOUD__API
           value: https://api.prefect.io
         - name: NAMESPACE
-          value: default
+          value: ${BAKERY_NAMESPACE}
         - name: IMAGE_PULL_SECRETS
           value: ''
         - name: PREFECT__CLOUD__AGENT__LABELS

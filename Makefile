@@ -1,22 +1,31 @@
-.PHONEY: init lint format plan apply destroy configure-kubectl
+.PHONEY: install install-dev init lint format plan apply destroy configure-kubectl setup-agent
+
+install:
+	poetry install --no-dev
+
+install-dev:
+	poetry install
 
 init:
 	terraform -chdir="terraform/" init
 
-lint:
+lint: init
 	terraform -chdir="terraform/" validate
 
 format:
 	terraform -chdir="terraform/" fmt
 
-plan:
-	terraform -chdir="terraform/" plan -var-file="../deployment.tfvars.json"
+plan: init
+	poetry run dotenv run terraform -chdir="terraform/" plan
 
-apply:
-	terraform -chdir="terraform/" apply -auto-approve -var-file="../deployment.tfvars.json"
+apply: init
+	poetry run dotenv run terraform -chdir="terraform/" apply -auto-approve
 
-destroy:
-	terraform -chdir="terraform/" destroy -auto-approve -var-file="../deployment.tfvars.json"
+destroy: init
+	poetry run dotenv run terraform -chdir="terraform/" destroy -auto-approve
 
 configure-kubectl:
-	az aks get-credentials --resource-group $$(terraform -chdir="terraform" output -raw bakery_resource_group_name) --name $$(terraform -chdir="terraform" output -raw bakery_cluster_name)
+	az aks get-credentials --overwrite-existing --resource-group $$(terraform -chdir="terraform" output -raw bakery_resource_group_name) --name $$(terraform -chdir="terraform" output -raw bakery_cluster_name)
+
+setup-agent:
+	poetry run dotenv run sh -c 'kubectl create namespace $$BAKERY_NAMESPACE --dry-run=client -o yaml | kubectl apply -f - && cat prefect_agent_conf.yaml | envsubst | kubectl apply -f -'
