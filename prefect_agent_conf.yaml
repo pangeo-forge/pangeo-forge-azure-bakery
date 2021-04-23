@@ -64,7 +64,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: prefect-agent-rbac
-  namespace: default
+  namespace: pangeo-forge-azure-bakery
 rules:
 - apiGroups:
   - batch
@@ -85,7 +85,7 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
   name: prefect-agent-rbac
-  namespace: default
+  namespace: pangeo-forge-azure-bakery
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
