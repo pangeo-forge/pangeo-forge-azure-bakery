@@ -29,3 +29,6 @@ configure-kubectl:
 
 setup-agent:
 	poetry run dotenv run sh -c 'kubectl create namespace $$BAKERY_NAMESPACE --dry-run=client -o yaml | kubectl apply -f - && cat prefect_agent_conf.yaml | envsubst | kubectl apply -f -'
+
+retrieve-storage-connection-string:
+	poetry run dotenv run sh -c 'az storage account show-connection-string -g $$(terraform -chdir="terraform" output -raw bakery_resource_group_name) -n $$(terraform -chdir="terraform" output -raw bakery_flow_storage_account_name)' | jq '.connectionString'
