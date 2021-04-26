@@ -26,8 +26,6 @@ with Flow(
     #     # container=os.environ["FLOW_STORAGE_CONTAINER"],
     #     # connection_string=os.environ["FLOW_STORAGE_CONNECTION_STRING"]
     #     container="ciarandev-bakery-flow-storage-container",
-    #     connection_string="DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=ciarandevbakeryflowstora;AccountKey=17cVFzXZTEYqil8y10EUmmI+aLxyFp6ENjbRJzrITCzSeDt4XAfty5ENaji1g28+Dn3PKF6J11KHYNL+5ev6XQ=="
-    # ),
     storage=storage.GitHub(
         repo="pangeo-forge/pangeo-forge-azure-bakery",
         path="/flow_test/manual_flow.py",
