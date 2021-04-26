@@ -22,14 +22,9 @@ with Flow(
         image="prefecthq/prefect:0.14.16-python3.8",
         labels=json.loads(os.environ["PREFECT__CLOUD__AGENT__LABELS"]),
     ),
-    # storage=storage.Azure(
-    #     # container=os.environ["FLOW_STORAGE_CONTAINER"],
-    #     # connection_string=os.environ["FLOW_STORAGE_CONNECTION_STRING"]
-    #     container="ciarandev-bakery-flow-storage-container",
-    storage=storage.GitHub(
-        repo="pangeo-forge/pangeo-forge-azure-bakery",
-        path="/flow_test/manual_flow.py",
-        ref="add-k8s-cluster"
+    storage=storage.Azure(
+        container=os.environ["FLOW_STORAGE_CONTAINER"],
+        connection_string=os.environ["FLOW_STORAGE_CONNECTION_STRING"]
     )
 ) as flow:
     hello_result = say_hello()

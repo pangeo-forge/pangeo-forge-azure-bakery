@@ -44,11 +44,15 @@ spec:
         - name: IMAGE_PULL_POLICY
           value: ''
         - name: SERVICE_ACCOUNT_NAME
-          value: ''
+          value: 'default'
         - name: PREFECT__BACKEND
           value: cloud
         - name: PREFECT__CLOUD__AGENT__AGENT_ADDRESS
           value: http://:8080
+        - name: FLOW_STORAGE_CONTAINER
+          value: ${FLOW_STORAGE_CONTAINER}
+        - name: FLOW_STORAGE_CONNECTION_STRING
+          value: ${FLOW_STORAGE_CONNECTION_STRING}
         image: prefecthq/prefect:0.14.16-python3.8
         imagePullPolicy: Always
         livenessProbe:
