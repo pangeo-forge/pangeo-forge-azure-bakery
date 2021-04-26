@@ -31,8 +31,7 @@ with Flow(
     storage=storage.GitHub(
         repo="pangeo-forge/pangeo-forge-azure-bakery",
         path="/flow_test/manual_flow.py",
-        ref="add-k8s-cluster",
-        access_token_secret=os.environ["GITHUB_ACCESS_TOKEN_SECRET"]
+        ref="add-k8s-cluster"
     )
 ) as flow:
     hello_result = say_hello()
