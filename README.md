@@ -8,6 +8,7 @@ This repository serves as the provider of an Terraform Application which deploys
 * [🧑‍💻 Development - Getting Started](#getting-started-🏃‍♀️)
 * [🧑‍💻 Development - Makefile goodness](#makefile-goodness)
 * [🚀 Deployment - Standard Deployments](#standard-deployments)
+* [📊 Flows - Logging](#logging)
 
 # Development
 
@@ -269,3 +270,36 @@ To destroy the infrastructure, you can run:
 
 ```bash
 $ make destroy # Destroys the Bakery
+```
+
+# Flows
+
+## Logging
+
+The deployment sets up a `Log Analytics Workspace` which AKS then references when we setup an `oms_agent` (Operations Management Suite) addon for the Bakery cluster. This enables us to have long-lived logging for the Kubernetes pods so that we can keep track of Flow runs for debugging.
+
+Currently, the easiest way I've found to get hold of the logs for the Flow you've just run goes as follows:
+
+1. Find the Flow location of your Flow in the Prefect UI:
+![The Prefect Flow Location UI](./readme_images/prefect_flow_location.png)
+
+2. Navigate to your Bakery Cluster Logs in the Azure Portal:
+![The Azure Portal for a Kubernetes Cluster](./readme_images/bakery_cluster_logs.png)
+
+3. Query for the `ContainerID` of the pod that ran your flow:
+    ```
+    ContainerLog
+    | where LogEntry contains "<flow-location>"
+    | project ContainerID
+    ```
+    ![Result of a ContainerID query on Azure](./readme_images/containerid_query_result.png)
+
+4. Query for the logs for that `ContainerID`, to get the full flow logs:
+    ```
+    ContainerLog
+    | where ContainerID in ("<containerid>")
+    | project TimeGenerated, LogEntry
+    ```
+    ![Result of the logs query on Azure](./readme_images/container_logs_query_result.png)
+
+The default behaviour of AKS is to only display live logs for Pods, hence the need to deploy the `Log Analytics Workspace`. The default Kubernetes behaviour for a Succeeded Pod is to delete that Pod, so we have to query for the `ContainerID` of the Pod that ran our specific flow as there's no other means of retrieving it within the Azure Portal.
