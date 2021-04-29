@@ -206,15 +206,15 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 
 **`make plan`**
 
-> This will run `terraform plan` within the `terraform/` directory using the contents of your `deployment.tfvars.json` file
+> This will run `terraform plan` within the `terraform/` directory using the contents of your `.env` file
 
 **`make apply`**
 
-> This will run `terraform apply` within the `terraform/` directory using the contents of your `deployment.tfvars.json` file. The deployment is auto-approved, so **make sure** you know what you're changing with your deployment first! (Best to run `make plan` to check!)
+> This will run `terraform apply` within the `terraform/` directory using the contents of your `.env` file. The deployment is auto-approved, so **make sure** you know what you're changing with your deployment first! (Best to run `make plan` to check!)
 
 **`make destroy`**
 
-> This will run `terraform destroy` within the `terraform/` directory using the contents of your `deployment.tfvars.json` file. The destroy is auto-approved, so **make sure** you know what you're destroying first!
+> This will run `terraform destroy` within the `terraform/` directory using the contents of your `.env` file. The destroy is auto-approved, so **make sure** you know what you're destroying first!
 
 **`make configure-kubectl`**
 
@@ -223,6 +223,14 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 **`make setup-agent`**
 
 > This will create a namespace on the AKS cluster with the name of `BAKERY_NAMESPACE`, then the agent configuration in `prefect_agent_conf.yaml` will be applied to the cluster. You **must** have deployed the cluster first
+
+**`make retrieve-flow-storage-container`**
+
+> This will use Terraform to echo out the value of the Bakeries Flow Storage Container name so that you can populate the value of `FLOW_STORAGE_CONTAINER` in `.env`. You **must** have deployed the cluster first
+
+**`make retrieve-storage-connection-string`**
+
+> This will use Terraform and Azure CLI to echo out the value of the Bakeries Flow Storage Accounts Connection String so that you can populate the value of `FLOW_STORAGE_CONNECTION_STRING` in `.env`. You **must** have deployed the cluster first
 
 # Deployment
 
@@ -240,13 +248,15 @@ $ make plan # Outputs the result of `terraform plan`
 
 ### Deploying AKS via Terraform
 
-To deploy the infrastructure, you can run:
+To deploy the Azure infrastructure required to host your Bakery, you can run:
 
 ```bash
 $ make apply # Deploys the Bakery AKS Cluster and storage
 ```
 
 ### Setting up the Prefect Agent
+
+To setup the Prefect Agent for your Bakery within your AKS cluster, you can run:
 
 ```bash
 $ make configure-kubectl # Uses the output from Terraform to configure kubectl to point to the newly deployed cluster
@@ -266,7 +276,9 @@ $ make retrieve-storage-connection-string
 "a-connection-string" # Set this as FLOW_STORAGE_CONNECTION_STRING in `.env`
 ```
 
-To destroy the infrastructure, you can run:
+### Destroying all Azure infrastructure
+
+To destroy the infrastructure within Azure, you can run:
 
 ```bash
 $ make destroy # Destroys the Bakery
