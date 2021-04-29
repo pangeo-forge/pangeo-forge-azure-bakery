@@ -292,7 +292,7 @@ To setup the Prefect Agent for your Bakery within your AKS cluster, you can run:
 
 ```bash
 $ make configure-kubectl # Uses the output from Terraform to configure kubectl to point to the newly deployed cluster
-$ make setup-agent # This will create a namespace on the AKS cluster with the name of `BAKERY_NAMESPACE`, then the agent configuration in `prefect_agent_conf.yaml` will be applied to the cluster
+$ make setup-agent # This will create a namespace on the AKS cluster with the name of `BAKERY_NAMESPACE`, then the agent configuration in `prefect_agent_conf.yaml` will be applied to the cluster, registering itself as an Agent for the Prefect Project defined in `PREFECT_PROJECT`, using `PREFECT__CLOUD__AGENT__AUTH_TOKEN` to authenticate
 ```
 
 ### Retrieving Flow Storage Container name and Storage Connection String
