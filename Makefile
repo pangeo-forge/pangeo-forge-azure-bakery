@@ -1,9 +1,6 @@
-.PHONEY: install install-dev init lint format plan apply destroy configure-kubectl setup-agent retrieve-flow-storage-container retrieve-storage-connection-string
+.PHONEY: install init lint format plan apply destroy configure-kubectl setup-agent retrieve-flow-storage-container retrieve-storage-connection-string
 
 install:
-	poetry install --no-dev
-
-install-dev:
 	poetry install
 
 init:

@@ -36,12 +36,10 @@ This project requires some Python dependencies (Namely `prefect` and `dotenv`), 
 * We can register flows for testing (it was also used to generate `prefect_agent_conf.yaml`)
 * We can use `.env` files to provide both Prefect Flows and Terraform environment variables
 
-To install the dependencies, run either:
+To install the dependencies, run:
 
 ```bash
-$ make install # For deploying the infrastructure only
-# or
-$ make install-dev # For developing on this project
+$ make install # Runs `poetry install` to install all Python dependencies required
 ```
 
 ### Azure Credential setup
@@ -192,11 +190,7 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 
 **`make install`**
 
-> This will run `poetry install --no-dev` with the contents of `poetry.lock` - Use this if you only want to deploy the infrastructure
-
-**`make install-dev`**
-
-> This will run `poetry install` with the contents of `poetry.lock` - Use this if you're developing this project
+> This will run `poetry install` with the contents of `poetry.lock`
 
 **`make init`**
 
