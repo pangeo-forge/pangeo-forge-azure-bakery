@@ -1,6 +1,8 @@
 terraform {
   required_version = ">= 0.15.0"
 
+  backend "azurerm" {}
+
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -16,7 +18,7 @@ provider "azurerm" {
 locals {
   tags = {
     "Project" : "pangeo-forge-azure-bakery",
-    "Client" : "Planetary Computer",
+    "Client" : "Planetary-Computer",
     "Owner" : var.owner,
     "Stack" : var.identifier
   }

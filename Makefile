@@ -1,10 +1,13 @@
-.PHONEY: install init lint format plan apply destroy configure-kubectl setup-agent retrieve-flow-storage-container retrieve-storage-connection-string
+.PHONEY: install setup-remote-state init lint format plan apply destroy configure-kubectl setup-agent retrieve-flow-storage-container retrieve-storage-connection-string
 
 install:
 	poetry install
 
+setup-remote-state:
+	poetry run dotenv run bash setup_remote_state.sh
+
 init:
-	terraform -chdir="terraform/" init
+	poetry run dotenv run terraform -chdir="terraform/" init
 
 lint: init
 	terraform -chdir="terraform/" validate

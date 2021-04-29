@@ -7,6 +7,7 @@ This repository serves as the provider of an Terraform Application which deploys
 * [🧑‍💻 Development - Requirements](#requirements)
 * [🧑‍💻 Development - Getting Started](#getting-started-🏃‍♀️)
 * [🧑‍💻 Development - Makefile goodness](#makefile-goodness)
+* [🚀 Deployment - Prerequisites](#prerequisites)
 * [🚀 Deployment - Standard Deployments](#standard-deployments)
 * [📊 Flows - Logging](#logging)
 
@@ -167,12 +168,13 @@ You should now be setup with the correct permissions to deploy the infrastructur
 
 ### `.env` file
 
-A `.env` file is expected at the root of the repository to store variables used within deployment, the expected values are:
+A `.env` file is expected at the root of the repository to store variables used within deployment, the expected variables are:
 
 ```bash
 TF_VAR_owner="<your-name>"
 TF_VAR_identifier="<a-unique-value-to-tie-to-your-deployment>"
 TF_VAR_region="<azure-region-name-to-deploy-to>"
+TF_CLI_ARGS_init="<backend-config-values>" # See [Deployment - Prerequisites > Terraform Remote State infrastructure]
 BAKERY_NAMESPACE="<the-name-for-your-prefect-agent-k8s-configs-namespace>"
 PREFECT__CLOUD__AGENT__AUTH_TOKEN="<value-of-runner-token>" # See https://docs.prefect.io/orchestration/agents/overview.html#tokens - This is required for your Agent to communicate to Prefect Cloud
 PREFECT__CLOUD__AUTH_TOKEN="<value-of-tenant-token>" # See https://docs.prefect.io/orchestration/concepts/tokens.html#tenant - This is used to support flow registration
@@ -192,13 +194,17 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 
 > This will run `poetry install` with the contents of `poetry.lock`
 
+**`make setup-remote-state`**
+
+> This will run `setup_remote_state.sh` with the contents of `.env`, it uses Azure CLI to provision a Resource Group, Storage Account, and Storage container for the Remote State that Terraform will use
+
 **`make init`**
 
-> This will run `terraform init` within the `terraform/` directory, installing any providers required for deployment
+> This will run `terraform init` within the `terraform/` directory, installing any providers required for deployment. You **must** have run `make setup-remote-state` beforehand
 
 **`make lint`**
 
-> This will run `terraform validate` within the `terraform/` directory, showing you anything that is incorrect in your Terraform scripts
+> This will run `terraform validate` within the `terraform/` directory, showing you anything that is incorrect in your Terraform scripts. You **must** have run `make setup-remote-state` beforehand
 
 **`make format`**
 
@@ -206,15 +212,15 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 
 **`make plan`**
 
-> This will run `terraform plan` within the `terraform/` directory using the contents of your `.env` file
+> This will run `terraform plan` within the `terraform/` directory using the contents of your `.env` file. You **must** have run `make setup-remote-state` beforehand
 
 **`make apply`**
 
-> This will run `terraform apply` within the `terraform/` directory using the contents of your `.env` file. The deployment is auto-approved, so **make sure** you know what you're changing with your deployment first! (Best to run `make plan` to check!)
+> This will run `terraform apply` within the `terraform/` directory using the contents of your `.env` file. The deployment is auto-approved, so **make sure** you know what you're changing with your deployment first! (Best to run `make plan` to check!). You **must** have run `make setup-remote-state` beforehand
 
 **`make destroy`**
 
-> This will run `terraform destroy` within the `terraform/` directory using the contents of your `.env` file. The destroy is auto-approved, so **make sure** you know what you're destroying first!
+> This will run `terraform destroy` within the `terraform/` directory using the contents of your `.env` file. The destroy is auto-approved, so **make sure** you know what you're destroying first! You **must** have run `make setup-remote-state` beforehand
 
 **`make configure-kubectl`**
 
@@ -234,7 +240,27 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 
 # Deployment
 
+## Prerequisites
+
+### Authentication and Dependencies
 Before you deploy the infrastructure, ensure you've taken all the steps outlined under [Azure Credential setup](#azure-credential-setup) and have run [`make install`](#makefile-goodness)
+
+### Terraform Remote State infrastructure
+
+The Terraform deployment relies on [Remote State](https://docs.microsoft.com/en-us/azure/developer/terraform/store-state-in-azure-storage) within Azure, this is so that the state of your deployment is not locked to a file on your local machine.
+
+> The concept of Remote State becomes a 🐓 and 🥚 situation where you need infrastructure available for Terraform to store your state, but you don't want to use Terraform for that infrastructure as that then needs remote state...
+
+The process of provisioning the infrastructure to support Remote State is encapsulated in a bash script: `setup_remote_state.sh`. This script relies on environment variables within `.env`, so to provision your Remote State infrastructure, run:
+
+```bash
+$ make setup-remote-state # Creates the infrastructure to host your Terraform Remote State
+Copy the following line into your .env file:
+
+TF_CLI_ARGS_init="-backend-config='resource_group_name=<identifier>-bakery-remote-state-resource-group' -backend-config='storage_account_name=remotestatestoreacc' -backend-config='container_name=<identifier>-bakery-remote-state-storage-container' -backend-config='access_key=<an-access-key>' -backend-config='key=<identifier>-bakery.state'"
+```
+
+As the command output states, you should copy the whole `TF_CLI_ARGS_init=*` line into your `.env` file, this will tell Terraform in all further commands to use Remote State
 
 ## Standard Deployments
 
