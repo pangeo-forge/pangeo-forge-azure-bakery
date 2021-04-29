@@ -1,10 +1,13 @@
-.PHONEY: install setup-remote-state init lint format plan apply destroy configure-kubectl setup-agent retrieve-flow-storage-container retrieve-storage-connection-string
+.PHONEY: install setup-remote-state destroy-remote-state init lint format plan apply destroy configure-kubectl setup-agent retrieve-flow-storage-container retrieve-storage-connection-string
 
 install:
 	poetry install
 
 setup-remote-state:
 	poetry run dotenv run bash setup_remote_state.sh
+
+destroy-remote-state:
+	poetry run dotenv run sh -c "az group delete --name $$TF_VAR_identifier-bakery-remote-state-resource-group --yes"
 
 init:
 	poetry run dotenv run terraform -chdir="terraform/" init

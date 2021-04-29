@@ -198,6 +198,10 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 
 > This will run `setup_remote_state.sh` with the contents of `.env`, it uses Azure CLI to provision a Resource Group, Storage Account, and Storage container for the Remote State that Terraform will use
 
+**`make destroy-remote-state`**
+
+> This will use Azure CLI to destroy the Remote State infrastructure provisioned via `make setup-remote-state`. The command assumes that the Resource Group is named as defined in the `setup_remote_state.sh` script: `<identifier>-bakery-remote-state-resource-group`
+
 **`make init`**
 
 > This will run `terraform init` within the `terraform/` directory, installing any providers required for deployment. You **must** have run `make setup-remote-state` beforehand
@@ -304,12 +308,24 @@ $ make retrieve-storage-connection-string
 "a-connection-string" # Set this as FLOW_STORAGE_CONNECTION_STRING in `.env`
 ```
 
-### Destroying all Azure infrastructure
+### Destroying all Bakery Azure infrastructure
 
-To destroy the infrastructure within Azure, you can run:
+To destroy the Bakery infrastructure within Azure, you can run:
 
 ```bash
-$ make destroy # Destroys the Bakery
+$ make destroy # Destroys the Bakery infrastructure - ** NOT the Remote State infrastructure **
+```
+
+### Destroying the Remote State infrastructure
+
+As the Remote State infrastructure is not provisioned with Terraform, we have to delete it manually with the Azure CLI.
+
+**You only need to delete this infrastructure if you're no longer deploying a Bakery; if you're destroying and re-deploying your Bakery frequently, don't delete this infrastructure**
+
+To delete the Remote State infrastructure, run:
+
+```bash
+$ make destroy-remote-state # Uses Azure CLI to destroy the Remote State infrastructure
 ```
 
 # Flows
