@@ -255,6 +255,8 @@ The process of provisioning the infrastructure to support Remote State is encaps
 
 ```bash
 $ make setup-remote-state # Creates the infrastructure to host your Terraform Remote State
+<various-azure-cli-ouput>
+
 Copy the following line into your .env file:
 
 TF_CLI_ARGS_init="-backend-config='resource_group_name=<identifier>-bakery-remote-state-resource-group' -backend-config='storage_account_name=remotestatestoreacc' -backend-config='container_name=<identifier>-bakery-remote-state-storage-container' -backend-config='access_key=<an-access-key>' -backend-config='key=<identifier>-bakery.state'"
@@ -311,6 +313,24 @@ $ make destroy # Destroys the Bakery
 ```
 
 # Flows
+
+## Registering Flows
+
+For quick testing of your Bakery deployment, there are Flows within `flow_test/` that you can register and run. Before you register any of the example Flows, you must have the values of `PREFECT__CLOUD__AUTH_TOKEN`, `PREFECT_PROJECT`, `PREFECT__CLOUD__AGENT__LABELS`, `FLOW_STORAGE_CONTAINER`, and `FLOW_STORAGE_CONNECTION_STRING` present and populated in `.env`. You must also have run [`make install`](#makefile-goodness).
+
+When your `.env` is populated and you've installed the project dependencies, you can register a Flow by running:
+
+```
+$ poetry run dotenv run python3 flow_test/<flow-file.py>
+
+[2021-04-29 13:28:22+0100] INFO - prefect.Azure | Uploading hello-flow/2021-04-29t12-28-21-953051-00-00 to <identifier>-bakery-flow-storage-container
+Flow URL: https://cloud.prefect.io/<your-account>/flow/aef82344-8a31-485b-a189-bc1398755f9e
+ └── ID: ca02500f-97ea-4605-9f66-1cccb457a3c0
+ └── Project: <PREFECT_PROJECT>
+ └── Labels: <PREFECT__CLOUD__AGENT__LABELS>
+```
+
+You can then navigate to [cloud.prefect.io](https://cloud.prefect.io/), find your Flow, and run it.
 
 ## Logging
 
