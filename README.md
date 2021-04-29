@@ -244,11 +244,17 @@ You can check _what_ you'll be deploying by running:
 $ make plan # Outputs the result of `terraform plan`
 ```
 
-### Deploying AKS and setting up the Prefect Agent
+### Deploying AKS via Terraform
+
 To deploy the infrastructure, you can run:
 
 ```bash
 $ make apply # Deploys the Bakery AKS Cluster and storage
+```
+
+### Setting up the Prefect Agent
+
+```bash
 $ make configure-kubectl # Uses the output from Terraform to configure kubectl to point to the newly deployed cluster
 $ make setup-agent # This will create a namespace on the AKS cluster with the name of `BAKERY_NAMESPACE`, then the agent configuration in `prefect_agent_conf.yaml` will be applied to the cluster
 ```
