@@ -6,7 +6,7 @@ authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-prefect = {extras = ["azure", "kubernetes"], version = "^0.14.16"}
+prefect = {extras = ["azure", "kubernetes"], version = "^0.14.17"}
 python-dotenv = "^0.17.0"
 
 [tool.poetry.dev-dependencies]

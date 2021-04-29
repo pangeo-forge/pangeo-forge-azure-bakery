@@ -49,11 +49,7 @@ spec:
           value: cloud
         - name: PREFECT__CLOUD__AGENT__AGENT_ADDRESS
           value: http://:8080
-        - name: FLOW_STORAGE_CONTAINER
-          value: ${FLOW_STORAGE_CONTAINER}
-        - name: FLOW_STORAGE_CONNECTION_STRING
-          value: ${FLOW_STORAGE_CONNECTION_STRING}
-        image: prefecthq/prefect:0.14.16-python3.8
+        image: prefecthq/prefect:0.14.17-python3.8
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 2
