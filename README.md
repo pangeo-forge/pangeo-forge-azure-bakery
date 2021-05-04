@@ -8,7 +8,9 @@ This repository serves as the provider of an Terraform Application which deploys
 * [🧑‍💻 Development - Getting Started](#getting-started-🏃‍♀️)
 * [🧑‍💻 Development - Makefile goodness](#makefile-goodness)
 * [🚀 Deployment - Prerequisites](#prerequisites)
-* [🚀 Deployment - Standard Deployments](#standard-deployments)
+* [🚀 Deployment - Deploying](#deploying)
+* [🚀 Deployment - Destroying](#destroying)
+* [📊 Flows - Registering Flows](#registering-flows)
 * [📊 Flows - Logging](#logging)
 
 # Development
@@ -29,6 +31,8 @@ If you're developing on Windows, we'd recommend using either [Git BASH](https://
 
 
 ## Getting Started 🏃‍♀️
+
+_**NOTE:** All `make` commands should be run from the **root** of the repository_
 
 ### Installing dependencies
 
@@ -171,17 +175,23 @@ You should now be setup with the correct permissions to deploy the infrastructur
 A `.env` file is expected at the root of the repository to store variables used within deployment, the expected variables are:
 
 ```bash
+# SET BY YOU MANUALLY:
+
 TF_VAR_owner="<your-name>"
 TF_VAR_identifier="<a-unique-value-to-tie-to-your-deployment>"
 TF_VAR_region="<azure-region-name-to-deploy-to>"
-TF_CLI_ARGS_init="<backend-config-values>" # See [Deployment - Prerequisites > Terraform Remote State infrastructure]
 BAKERY_NAMESPACE="<the-name-for-your-prefect-agent-k8s-configs-namespace>"
 PREFECT__CLOUD__AGENT__AUTH_TOKEN="<value-of-runner-token>" # See https://docs.prefect.io/orchestration/agents/overview.html#tokens - This is required for your Agent to communicate to Prefect Cloud
 PREFECT__CLOUD__AUTH_TOKEN="<value-of-tenant-token>" # See https://docs.prefect.io/orchestration/concepts/tokens.html#tenant - This is used to support flow registration
 PREFECT_PROJECT="<name-of-a-prefect-project>" # See https://docs.prefect.io/orchestration/concepts/projects.html#creating-a-project - This is where the bakery's test flows will be registered
 PREFECT__CLOUD__AGENT__LABELS="<a-set-of-prefect-agent-labels>" # See https://docs.prefect.io/orchestration/agents/overview.html#labels - These will be registered with the deployed agent to limit which flows should be executed by the agent
-FLOW_STORAGE_CONTAINER="<a-flow-storage-container-name>" # See [Standard Deployments > Retrieving Flow Storage Container name and Storage Connection String]
-FLOW_STORAGE_CONNECTION_STRING="<a-storage-account-connection-string>" # See [Standard Deployments > Retrieving Flow Storage Container name and Storage Connection String]
+
+# AUTOMATICALLY INSERTED/UPDATED BY MAKE COMMANDS:
+
+TF_CLI_ARGS_init="<backend-config-values>" # See [Deployment - Prerequisites > Terraform Remote State infrastructure]
+AZURE_BAKERY_IMAGE="<acr-image-tag" # See [Deployment - Standard Deployments > Pushing the Prefect Agent/Worker image]
+FLOW_STORAGE_CONTAINER="<a-flow-storage-container-name>" # See [Deployment - Standard Deployments > Retrieving Flow Storage Container name and Storage Connection String]
+FLOW_STORAGE_CONNECTION_STRING="<a-storage-account-connection-string>" # See [Deployment - Standard Deployments > Retrieving Flow Storage Container name and Storage Connection String]
 ```
 
 An example called `example.env` is available for you to copy, rename, and fill out accordingly.
@@ -234,13 +244,17 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 
 > This will create a namespace on the AKS cluster with the name of `BAKERY_NAMESPACE`, then the agent configuration in `prefect_agent_conf.yaml` will be applied to the cluster. You **must** have deployed the cluster first
 
-**`make retrieve-flow-storage-container`**
+**`make retrieve-flow-storage-values`**
 
-> This will use Terraform to echo out the value of the Bakeries Flow Storage Container name so that you can populate the value of `FLOW_STORAGE_CONTAINER` in `.env`. You **must** have deployed the cluster first
+> This will use Terraform and Azure CLI to populate `.env` with the values of `FLOW_STORAGE_CONTAINER` and `FLOW_STORAGE_CONNECTION_STRING` so that you can register Flows. You **must** have deployed the cluster first
 
-**`make retrieve-storage-connection-string`**
+**`make build-and-push-image`**
 
-> This will use Terraform and Azure CLI to echo out the value of the Bakeries Flow Storage Accounts Connection String so that you can populate the value of `FLOW_STORAGE_CONNECTION_STRING` in `.env`. You **must** have deployed the cluster first
+> This will use Docker and Azure CLI to build and push the image defined in [Deployment -> Pushing the Prefect Agent/Worker image] to ACR. You **must** have deployed the cluster first
+
+**`make deploy-bakery`**
+
+> This encapsulates all the infrastructure and `.env` setup steps needed to deploy the Azure Bakery. This command is the same as running: `make setup-remote-state apply build-and-push-image configure-kubectl setup-agent retrieve-flow-storage-values`.
 
 # Deployment
 
@@ -255,20 +269,33 @@ The Terraform deployment relies on [Remote State](https://docs.microsoft.com/en-
 
 > The concept of Remote State becomes a 🐓 and 🥚 situation where you need infrastructure available for Terraform to store your state, but you don't want to use Terraform for that infrastructure as that then needs remote state...
 
-The process of provisioning the infrastructure to support Remote State is encapsulated in a bash script: `setup_remote_state.sh`. This script relies on environment variables within `.env`, so to provision your Remote State infrastructure, run:
+The process of provisioning the infrastructure to support Remote State is encapsulated in a bash script: `setup_remote_state.sh`. To provision your Remote State infrastructure, run:
 
 ```bash
 $ make setup-remote-state # Creates the infrastructure to host your Terraform Remote State
 <various-azure-cli-ouput>
 
-Copy the following line into your .env file:
-
-TF_CLI_ARGS_init="-backend-config='resource_group_name=<identifier>-bakery-remote-state-resource-group' -backend-config='storage_account_name=remotestatestoreacc' -backend-config='container_name=<identifier>-bakery-remote-state-storage-container' -backend-config='access_key=<an-access-key>' -backend-config='key=<identifier>-bakery.state'"
+Found TF_CLI_ARGS_init set in `.env`, replaced with: TF_CLI_ARGS_init="-backend-config='resource_group_name=<identifier>-bakery-remote-state-resource-group' -backend-config='storage_account_name=remotestatestoreacc' -backend-config='container_name=<identifier>-bakery-remote-state-storage-container' -backend-config='access_key=<an-access-key>' -backend-config='key=<identifier>-bakery.state'"
 ```
 
-As the command output states, you should copy the whole `TF_CLI_ARGS_init=*` line into your `.env` file, this will tell Terraform in all further commands to use Remote State
+## Deploying
 
-## Standard Deployments
+A Standard Deployment of the Azure Bakery comprises of several steps, they are listed below; the links will take you to an explanation of each step.
+
+Should you wish to just deploy the Bakery without diving into these steps, ensure you've met all of the [prerequisites](#prerequisites) for deployment, then you can simply run:
+
+```bash
+$ make deploy-bakery # Deploys all the Azure Bakery infrastructure and prepares `.env` for further usage
+```
+
+**Deployment steps**
+
+0. [Ensure you've done the pre-requisites](#prerequisites)
+1. [Confirm what's being deployed via Terraform](#confirm-what's-being-deployed-via-terraform)
+2. [Deploying AKS via Terraform](#deploying-aks-via-terraform)
+3. [Pushing the Prefect Agent/Worker image](#pushing-the-prefect-agent/worker-image)
+4. [Setting up the Prefect Agent](#setting-up-the-prefect-agent)
+5. [Retrieving Flow Storage Container name and Storage Connection String](#retrieving-flow-storage-container-name-and-storage-connection-string)
 
 ### Confirm what's being deployed via Terraform
 
@@ -286,6 +313,17 @@ To deploy the Azure infrastructure required to host your Bakery, you can run:
 $ make apply # Deploys the Bakery AKS Cluster and storage
 ```
 
+### Pushing the Prefect Agent/Worker image
+
+To make use of `KubeCluster` from `dask_kubernetes`, we currently have to roll our own Docker image with Prefect `0.14.17` and Kubernetes `12.0.1`, this is because of an issue [here](https://github.com/PrefectHQ/prefect/pull/4452) which **has** been fixed, but is not released. To build and push the image to ACR, you can run:
+
+```bash
+$ make build-and-push-image # Builds and pushes the Agent/Worker image to ACR
+<various-docker-output>
+
+Didnt find AZURE_BAKERY_IMAGE set in `.env`, set to: AZURE_BAKERY_IMAGE="<identifier>bakeryimageregistry.azurecr.io/pangeo-forge-azure-bakery-image"
+```
+
 ### Setting up the Prefect Agent
 
 To setup the Prefect Agent for your Bakery within your AKS cluster, you can run:
@@ -297,16 +335,22 @@ $ make setup-agent # This will create a namespace on the AKS cluster with the na
 
 ### Retrieving Flow Storage Container name and Storage Connection String
 
-To successfully register and store your flow, you will need to populate `.env` with `FLOW_STORAGE_CONTAINER` and `FLOW_STORAGE_CONNECTION_STRING`
-
-To retrieve the values so that you can update `.env`, run:
+To successfully register and store your flow, you will need to retrieve the Container name and Connection string, you can run the following to populate the values of `FLOW_STORAGE_CONTAINER` and `FLOW_STORAGE_CONNECTION_STRING`:
 
 ```bash
-$ make retrieve-flow-storage-container
-"a-storage-container-name" # Set this as FLOW_STORAGE_CONTAINER in `.env`
-$ make retrieve-storage-connection-string
-"a-connection-string" # Set this as FLOW_STORAGE_CONNECTION_STRING in `.env`
+$ make retrieve-flow-storage-values
+Didnt find FLOW_STORAGE_CONTAINER set in `.env`, set to: FLOW_STORAGE_CONTAINER="<identifier>-bakery-flow-storage-container"
+Didnt find FLOW_STORAGE_CONNECTION_STRING set in `.env`, set to: FLOW_STORAGE_CONNECTION_STRING="<connection-string>"
 ```
+
+## Destroying
+
+**Destroying steps**
+
+Removal of the Bakery comprises of two steps, they are listed below and further explained as you scroll down:
+
+1. [Destroying all Bakery Azure infrastructure](#destroying-all-bakery-azure-infrastructure)
+2. [Destroying the Remote State infrastructure](#destroying-the-remote-state-infrastructure)
 
 ### Destroying all Bakery Azure infrastructure
 
