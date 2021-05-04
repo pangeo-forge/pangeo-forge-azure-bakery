@@ -1,10 +1,10 @@
-.PHONEY: install setup-remote-state destroy-remote-state init lint format plan apply destroy configure-kubectl setup-agent retrieve-flow-storage-container retrieve-storage-connection-string
+.PHONEY: install setup-remote-state destroy-remote-state init lint format plan apply destroy configure-kubectl setup-agent build-and-push-image retrieve-flow-storage-values deploy-bakery
 
 install:
 	poetry install
 
 setup-remote-state:
-	poetry run dotenv run bash setup_remote_state.sh
+	poetry run dotenv run bash ./scripts/setup_remote_state.sh
 
 destroy-remote-state:
 	poetry run dotenv run sh -c 'az group delete --resource-group $$TF_VAR_identifier-bakery-remote-state-resource-group --yes'
@@ -33,8 +33,10 @@ configure-kubectl:
 setup-agent:
 	poetry run dotenv run sh -c 'kubectl create namespace $$BAKERY_NAMESPACE --dry-run=client -o yaml | kubectl apply -f - && cat prefect_agent_conf.yaml | envsubst | kubectl apply -f -'
 
-retrieve-flow-storage-container:
-	echo $$(terraform -chdir="terraform" output -raw bakery_flow_storage_container_name)
+retrieve-flow-storage-values:
+	poetry run dotenv run bash ./scripts/retrieve_flow_storage_values.sh
 
-retrieve-storage-connection-string:
-	poetry run dotenv run sh -c 'az storage account show-connection-string -g $$(terraform -chdir="terraform" output -raw bakery_resource_group_name) -n $$(terraform -chdir="terraform" output -raw bakery_flow_storage_account_name)' | jq '.connectionString'
+build-and-push-image:
+	poetry run dotenv run bash ./scripts/build_and_push_image.sh
+
+deploy-bakery: setup-remote-state apply build-and-push-image configure-kubectl setup-agent retrieve-flow-storage-values
