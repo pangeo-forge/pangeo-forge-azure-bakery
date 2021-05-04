@@ -12,6 +12,4 @@ docker tag $LOCAL_TAG $REMOTE_TAG
 
 docker push $REMOTE_TAG
 
-printf "\r\nCopy the following line into your .env file:\r\n\r\n"
-
-echo "AZURE_BAKERY_IMAGE=\"$REMOTE_TAG\""
+python3 ./scripts/replace_or_insert_value.py $REMOTE_TAG AZURE_BAKERY_IMAGE
