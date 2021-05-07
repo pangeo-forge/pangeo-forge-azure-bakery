@@ -64,7 +64,7 @@ with Flow(
     zarr_output = "dask_transform_flow.zarr"
     nc_sources = download.map(
         sources,
-        cache_location=unmapped(f"abfs://{os.environ['FLOW_STORAGE_CONTAINER']}/cache/{zarr_output}"),
+        cache_location=unmapped(f"abfs://{os.environ['FLOW_STORAGE_CONTAINER']}/cache/transform_flow"),
     )
     chunked = chunk(nc_sources, size=5)
     target = f"abfs://{os.environ['FLOW_STORAGE_CONTAINER']}/target/{zarr_output}"
