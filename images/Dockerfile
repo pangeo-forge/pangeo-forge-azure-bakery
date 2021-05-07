@@ -1,6 +1,9 @@
 FROM prefecthq/prefect:0.14.17-python3.8
 
+COPY requirements.txt requirements.txt
+
+RUN apt-get update && apt-get install -y git
+
 RUN python3 -m pip install --upgrade pip && \
-    pip install prefect[azure,kubernetes]==0.14.17 && \
-    pip install kubernetes==12.0.1
+    pip install -r requirements.txt
 

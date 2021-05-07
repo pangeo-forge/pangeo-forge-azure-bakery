@@ -8,6 +8,11 @@ authors = ["Your Name <you@example.com>"]
 python = "^3.8"
 prefect = {extras = ["azure", "kubernetes"], version = "^0.14.17"}
 python-dotenv = "^0.17.0"
+zarr = "2.7.0"
+pangeo-forge-recipes = {git = "https://github.com/pangeo-forge/pangeo-forge.git"}
+pandas = "^1.2.4"
+adlfs = "^0.7.4"
+
 
 [tool.poetry.dev-dependencies]
 

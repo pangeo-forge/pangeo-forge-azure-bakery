@@ -15,6 +15,8 @@ flow_name = "hello-flow"
 def say_hello():
     logger = prefect.context.get("logger")
     logger.info("Hello, Cloud")
+    import time
+    time.sleep(60)
     return "hello result"
 
 
