@@ -12,6 +12,8 @@ zarr = "2.7.0"
 pangeo-forge-recipes = {git = "https://github.com/pangeo-forge/pangeo-forge.git"}
 pandas = "^1.2.4"
 adlfs = "^0.7.4"
+h5py = "^3.2.1"
+h5netcdf = "^0.11.0"
 
 
 [tool.poetry.dev-dependencies]
