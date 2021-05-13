@@ -35,3 +35,4 @@ def combine_and_write(
         logger.info(traceback.format_exc())
         import time
         time.sleep(60)
+        raise ex
