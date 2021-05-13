@@ -2,7 +2,7 @@
 
 REGISTRY_NAME=$(terraform -chdir="terraform" output -raw bakery_image_registry_name)
 LOCAL_TAG=pangeo-forge-azure-bakery-image
-REMOTE_TAG=$REGISTRY_NAME.azurecr.io/$LOCAL_TAG
+REMOTE_TAG=$REGISTRY_NAME.azurecr.io/$LOCAL_TAG:latest
 
 az acr login --name $REGISTRY_NAME
 

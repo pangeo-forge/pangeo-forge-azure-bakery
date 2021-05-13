@@ -14,7 +14,7 @@ requests = ">=2.0.0,<3"
 
 [[package]]
 name = "adlfs"
-version = "0.7.4"
+version = "0.7.5"
 description = "Access Azure Datalake Gen1 with fsspec and dask"
 category = "main"
 optional = false
@@ -587,7 +587,7 @@ test = ["pytest", "pytest-rerunfailures", "pytest-xdist"]
 
 [[package]]
 name = "dask-kubernetes"
-version = "2021.3.0"
+version = "2021.3.1"
 description = "Native Kubernetes integration for Dask"
 category = "main"
 optional = false
@@ -596,8 +596,8 @@ python-versions = ">=3.7"
 [package.dependencies]
 dask = ">=2021.02.0"
 distributed = ">=2021.02.0"
-kubernetes = ">=9"
-kubernetes-asyncio = ">=9"
+kubernetes = ">=12.0.1"
+kubernetes-asyncio = ">=12.0.1"
 
 [[package]]
 name = "distributed"
@@ -831,7 +831,7 @@ testing = ["coverage (<5)", "pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3
 
 [[package]]
 name = "kubernetes"
-version = "11.0.0b2"
+version = "12.0.1"
 description = "Kubernetes python client"
 category = "main"
 optional = false
@@ -877,16 +877,16 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
 name = "marshmallow"
-version = "3.12.0"
+version = "3.12.1"
 description = "A lightweight library for converting complex datatypes to and from native Python datatypes."
 category = "main"
 optional = false
 python-versions = ">=3.5"
 
 [package.extras]
-dev = ["pytest", "pytz", "simplejson", "mypy (==0.812)", "flake8 (==3.9.1)", "flake8-bugbear (==21.4.3)", "pre-commit (>=2.4,<3.0)", "tox"]
-docs = ["sphinx (==3.5.4)", "sphinx-issues (==1.2.0)", "alabaster (==0.7.12)", "sphinx-version-warning (==1.1.2)", "autodocsumm (==0.2.3)"]
-lint = ["mypy (==0.812)", "flake8 (==3.9.1)", "flake8-bugbear (==21.4.3)", "pre-commit (>=2.4,<3.0)"]
+dev = ["pytest", "pytz", "simplejson", "mypy (==0.812)", "flake8 (==3.9.2)", "flake8-bugbear (==21.4.3)", "pre-commit (>=2.4,<3.0)", "tox"]
+docs = ["sphinx (==4.0.0)", "sphinx-issues (==1.2.0)", "alabaster (==0.7.12)", "sphinx-version-warning (==1.1.2)", "autodocsumm (==0.2.4)"]
+lint = ["mypy (==0.812)", "flake8 (==3.9.2)", "flake8-bugbear (==21.4.3)", "pre-commit (>=2.4,<3.0)"]
 tests = ["pytest", "pytz", "simplejson"]
 
 [[package]]
@@ -1035,7 +1035,7 @@ msgpack = ["msgpack"]
 
 [[package]]
 name = "numpy"
-version = "1.20.2"
+version = "1.20.3"
 description = "NumPy is the fundamental package for array computing with Python."
 category = "main"
 optional = false
@@ -1072,12 +1072,11 @@ test = ["pytest (>=5.0.1)", "pytest-xdist", "hypothesis (>=3.58)"]
 
 [[package]]
 name = "pangeo-forge-recipes"
-version = "0.2.1.dev44+gb4199f7"
-description = "Pipeline tools for building and publishing analysis ready datasets"
+version = "0.3.3"
+description = "Pipeline tools for building and publishing analysis ready datasets."
 category = "main"
 optional = false
 python-versions = ">=3.7"
-develop = false
 
 [package.dependencies]
 click = "*"
@@ -1085,14 +1084,11 @@ dask = "*"
 distributed = "*"
 fsspec = {version = "*", extras = ["http"]}
 rechunker = "0.4.2"
-xarray = "branch master"
+xarray = ">=0.18.0"
 zarr = ">=2.6.0"
 
-[package.source]
-type = "git"
-url = "https://github.com/pangeo-forge/pangeo-forge.git"
-reference = "master"
-resolved_reference = "b4199f7b1b94fa21813e78681585caa734c89bcd"
+[package.extras]
+dev = ["pytest", "pytest-sugar", "pytest-cov", "pytest-lazy-fixture", "scipy", "netcdf4", "h5netcdf", "zarr"]
 
 [[package]]
 name = "partd"
@@ -1146,7 +1142,7 @@ tests = ["pytest (>=4.6.9)", "pytest-cov (>=2.8.1)", "sphinx (>=1.8.5)", "pytest
 
 [[package]]
 name = "prefect"
-version = "0.14.17"
+version = "0.14.19"
 description = "The Prefect Core automation and scheduling engine."
 category = "main"
 optional = false
@@ -1163,7 +1159,7 @@ dask = {version = ">=2.17.0", markers = "python_version > \"3.6\""}
 dask-kubernetes = {version = ">=0.8.0", optional = true, markers = "extra == \"kubernetes\""}
 distributed = {version = ">=2.17.0", markers = "python_version > \"3.6\""}
 docker = ">=3.4.1"
-kubernetes = {version = ">=9.0.0a1,<=11.0.0b2", optional = true, markers = "extra == \"kubernetes\""}
+kubernetes = {version = ">=9.0.0a1,<=13.0", optional = true, markers = "extra == \"kubernetes\""}
 marshmallow = ">=3.0.0b19"
 marshmallow-oneofschema = ">=2.0.0b2"
 msgpack = ">=0.6.0"
@@ -1181,11 +1177,11 @@ urllib3 = ">=1.24.3"
 
 [package.extras]
 airtable = ["airtable-python-wrapper (>=0.11,<0.12)"]
-all_extras = ["airtable-python-wrapper (>=0.11,<0.12)", "boto3 (>=1.9,<2.0)", "azure-storage-blob (>=12.1.0,<13.0)", "azureml-sdk (>=1.0.65,<1.1)", "azure-cosmos (>=3.1.1,<3.2)", "atlassian-python-api (>=2.0.1)", "dask-cloudprovider[aws] (>=0.2.0)", "black", "graphviz (>=0.8)", "jinja2 (>=2.0,<3.0)", "mypy (>=0.600,<0.813)", "Pygments (>=2.2,<3.0)", "pytest (>=5.0)", "testfixtures (>=6.10.3)", "pytest-env (>=0.6.0)", "pytest-xdist (>=1.23)", "dropbox (>=9.0,<10.0)", "great-expectations (>=0.11.1)", "google-cloud-bigquery (>=1.6.0,<2.0)", "google-cloud-storage (>=1.13,<2.0)", "dulwich (>=0.19.7)", "PyGithub (>=1.51,<2.0)", "python-gitlab (>=2.5.0,<3.0)", "gspread (>=3.6.0)", "jira (>=2.0.0)", "papermill (>=2.2.0)", "nbconvert (>=6.0.7)", "dask-kubernetes (>=0.8.0)", "kubernetes (>=9.0.0a1,<=11.0.0b2)", "pandas (>=1.0.1)", "psycopg2-binary (>=2.8.2)", "pymysql (>=0.9.3)", "pyodbc (>=4.0.30)", "pushbullet.py (>=0.11.0)", "redis (>=3.2.1)", "feedparser (>=5.0.1,<6.0)", "snowflake-connector-python (>=1.8.2,<2.5)", "spacy (>=2.0.0,<3.0.0)", "graphviz (>=0.8.3)", "tweepy (>=3.5,<4.0)", "pyarrow (>=0.15.1)", "pyexasol (>=0.16.1)", "soda-sql (>=2.0.0b25)"]
-all_orchestration_extras = ["boto3 (>=1.9,<2.0)", "azure-storage-blob (>=12.1.0,<13.0)", "atlassian-python-api (>=2.0.1)", "google-cloud-storage (>=1.13,<2.0)", "dulwich (>=0.19.7)", "PyGithub (>=1.51,<2.0)", "python-gitlab (>=2.5.0,<3.0)", "kubernetes (>=9.0.0a1,<=11.0.0b2)"]
+all_extras = ["airtable-python-wrapper (>=0.11,<0.12)", "boto3 (>=1.9,<2.0)", "azure-storage-blob (>=12.1.0,<13.0)", "azureml-sdk (>=1.0.65,<1.1)", "azure-cosmos (>=3.1.1,<3.2)", "atlassian-python-api (>=2.0.1)", "dask-cloudprovider[aws] (>=0.2.0)", "black", "graphviz (>=0.8)", "jinja2 (>=2.0,<3.0)", "mypy (>=0.600,<0.813)", "Pygments (>=2.2,<3.0)", "pytest (>=5.0)", "testfixtures (>=6.10.3)", "pytest-env (>=0.6.0)", "pytest-xdist (>=1.23)", "dropbox (>=9.0,<10.0)", "great-expectations (>=0.11.1)", "google-cloud-bigquery (>=1.6.0,<2.0)", "google-cloud-storage (>=1.13,<2.0)", "dulwich (>=0.19.7)", "PyGithub (>=1.51,<2.0)", "python-gitlab (>=2.5.0,<3.0)", "gspread (>=3.6.0)", "jira (>=2.0.0)", "papermill (>=2.2.0)", "nbconvert (>=6.0.7)", "dask-kubernetes (>=0.8.0)", "kubernetes (>=9.0.0a1,<=13.0)", "pandas (>=1.0.1)", "psycopg2-binary (>=2.8.2)", "pymysql (>=0.9.3)", "pyodbc (>=4.0.30)", "pushbullet.py (>=0.11.0)", "redis (>=3.2.1)", "feedparser (>=5.0.1,<6.0)", "snowflake-connector-python (>=1.8.2,<2.5)", "spacy (>=2.0.0,<3.0.0)", "graphviz (>=0.8.3)", "tweepy (>=3.5,<4.0)", "pyarrow (>=0.15.1)", "pyexasol (>=0.16.1)", "soda-sql (>=2.0.0b25)", "sendgrid (>=6.7.0)"]
+all_orchestration_extras = ["boto3 (>=1.9,<2.0)", "azure-storage-blob (>=12.1.0,<13.0)", "atlassian-python-api (>=2.0.1)", "google-cloud-storage (>=1.13,<2.0)", "dulwich (>=0.19.7)", "PyGithub (>=1.51,<2.0)", "python-gitlab (>=2.5.0,<3.0)", "kubernetes (>=9.0.0a1,<=13.0)"]
 aws = ["boto3 (>=1.9,<2.0)"]
 azure = ["azure-storage-blob (>=12.1.0,<13.0)", "azureml-sdk (>=1.0.65,<1.1)", "azure-cosmos (>=3.1.1,<3.2)"]
-base_library_ci = ["boto3 (>=1.9,<2.0)", "azure-storage-blob (>=12.1.0,<13.0)", "atlassian-python-api (>=2.0.1)", "google-cloud-storage (>=1.13,<2.0)", "dulwich (>=0.19.7)", "PyGithub (>=1.51,<2.0)", "python-gitlab (>=2.5.0,<3.0)", "kubernetes (>=9.0.0a1,<=11.0.0b2)", "black", "graphviz (>=0.8)", "jinja2 (>=2.0,<3.0)", "mypy (>=0.600,<0.813)", "Pygments (>=2.2,<3.0)", "pytest (>=5.0)", "testfixtures (>=6.10.3)", "pytest-env (>=0.6.0)", "pytest-xdist (>=1.23)", "pandas (>=1.0.1)", "jira (>=2.0.0)"]
+base_library_ci = ["boto3 (>=1.9,<2.0)", "azure-storage-blob (>=12.1.0,<13.0)", "atlassian-python-api (>=2.0.1)", "google-cloud-storage (>=1.13,<2.0)", "dulwich (>=0.19.7)", "PyGithub (>=1.51,<2.0)", "python-gitlab (>=2.5.0,<3.0)", "kubernetes (>=9.0.0a1,<=13.0)", "black", "graphviz (>=0.8)", "jinja2 (>=2.0,<3.0)", "mypy (>=0.600,<0.813)", "Pygments (>=2.2,<3.0)", "pytest (>=5.0)", "testfixtures (>=6.10.3)", "pytest-env (>=0.6.0)", "pytest-xdist (>=1.23)", "pandas (>=1.0.1)", "jira (>=2.0.0)"]
 bitbucket = ["atlassian-python-api (>=2.0.1)"]
 dask_cloudprovider = ["dask-cloudprovider[aws] (>=0.2.0)"]
 dev = ["black", "graphviz (>=0.8)", "jinja2 (>=2.0,<3.0)", "mypy (>=0.600,<0.813)", "Pygments (>=2.2,<3.0)", "pytest (>=5.0)", "testfixtures (>=6.10.3)", "pytest-env (>=0.6.0)", "pytest-xdist (>=1.23)"]
@@ -1201,18 +1197,19 @@ google = ["google-cloud-bigquery (>=1.6.0,<2.0)", "google-cloud-storage (>=1.13,
 gsheets = ["gspread (>=3.6.0)"]
 jira = ["jira (>=2.0.0)"]
 jupyter = ["papermill (>=2.2.0)", "nbconvert (>=6.0.7)"]
-kubernetes = ["dask-kubernetes (>=0.8.0)", "kubernetes (>=9.0.0a1,<=11.0.0b2)"]
+kubernetes = ["dask-kubernetes (>=0.8.0)", "kubernetes (>=9.0.0a1,<=13.0)"]
 mysql = ["pymysql (>=0.9.3)"]
 pandas = ["pandas (>=1.0.1)"]
 postgres = ["psycopg2-binary (>=2.8.2)"]
 pushbullet = ["pushbullet.py (>=0.11.0)"]
 redis = ["redis (>=3.2.1)"]
 rss = ["feedparser (>=5.0.1,<6.0)"]
+sendgrid = ["sendgrid (>=6.7.0)"]
 snowflake = ["snowflake-connector-python (>=1.8.2,<2.5)"]
 sodasql = ["soda-sql (>=2.0.0b25)"]
 spacy = ["spacy (>=2.0.0,<3.0.0)"]
 sql_server = ["pyodbc (>=4.0.30)"]
-task_library_ci = ["airtable-python-wrapper (>=0.11,<0.12)", "boto3 (>=1.9,<2.0)", "azure-storage-blob (>=12.1.0,<13.0)", "azureml-sdk (>=1.0.65,<1.1)", "azure-cosmos (>=3.1.1,<3.2)", "atlassian-python-api (>=2.0.1)", "black", "graphviz (>=0.8)", "jinja2 (>=2.0,<3.0)", "mypy (>=0.600,<0.813)", "Pygments (>=2.2,<3.0)", "pytest (>=5.0)", "testfixtures (>=6.10.3)", "pytest-env (>=0.6.0)", "pytest-xdist (>=1.23)", "dropbox (>=9.0,<10.0)", "great-expectations (>=0.11.1)", "google-cloud-bigquery (>=1.6.0,<2.0)", "google-cloud-storage (>=1.13,<2.0)", "dulwich (>=0.19.7)", "PyGithub (>=1.51,<2.0)", "python-gitlab (>=2.5.0,<3.0)", "gspread (>=3.6.0)", "jira (>=2.0.0)", "papermill (>=2.2.0)", "nbconvert (>=6.0.7)", "dask-kubernetes (>=0.8.0)", "kubernetes (>=9.0.0a1,<=11.0.0b2)", "pandas (>=1.0.1)", "psycopg2-binary (>=2.8.2)", "pymysql (>=0.9.3)", "pushbullet.py (>=0.11.0)", "redis (>=3.2.1)", "feedparser (>=5.0.1,<6.0)", "snowflake-connector-python (>=1.8.2,<2.5)", "spacy (>=2.0.0,<3.0.0)", "graphviz (>=0.8.3)", "tweepy (>=3.5,<4.0)", "pyarrow (>=0.15.1)", "pyexasol (>=0.16.1)", "soda-sql (>=2.0.0b25)"]
+task_library_ci = ["airtable-python-wrapper (>=0.11,<0.12)", "boto3 (>=1.9,<2.0)", "azure-storage-blob (>=12.1.0,<13.0)", "azureml-sdk (>=1.0.65,<1.1)", "azure-cosmos (>=3.1.1,<3.2)", "atlassian-python-api (>=2.0.1)", "black", "graphviz (>=0.8)", "jinja2 (>=2.0,<3.0)", "mypy (>=0.600,<0.813)", "Pygments (>=2.2,<3.0)", "pytest (>=5.0)", "testfixtures (>=6.10.3)", "pytest-env (>=0.6.0)", "pytest-xdist (>=1.23)", "dropbox (>=9.0,<10.0)", "great-expectations (>=0.11.1)", "google-cloud-bigquery (>=1.6.0,<2.0)", "google-cloud-storage (>=1.13,<2.0)", "dulwich (>=0.19.7)", "PyGithub (>=1.51,<2.0)", "python-gitlab (>=2.5.0,<3.0)", "gspread (>=3.6.0)", "jira (>=2.0.0)", "papermill (>=2.2.0)", "nbconvert (>=6.0.7)", "dask-kubernetes (>=0.8.0)", "kubernetes (>=9.0.0a1,<=13.0)", "pandas (>=1.0.1)", "psycopg2-binary (>=2.8.2)", "pymysql (>=0.9.3)", "pushbullet.py (>=0.11.0)", "redis (>=3.2.1)", "feedparser (>=5.0.1,<6.0)", "snowflake-connector-python (>=1.8.2,<2.5)", "spacy (>=2.0.0,<3.0.0)", "graphviz (>=0.8.3)", "tweepy (>=3.5,<4.0)", "pyarrow (>=0.15.1)", "pyexasol (>=0.16.1)", "soda-sql (>=2.0.0b25)", "sendgrid (>=6.7.0)"]
 templates = ["jinja2 (>=2.0,<3.0)"]
 test = ["pytest (>=5.0)", "testfixtures (>=6.10.3)", "pytest-env (>=0.6.0)", "pytest-xdist (>=1.23)"]
 twitter = ["tweepy (>=3.5,<4.0)"]
@@ -1575,12 +1572,11 @@ six = "*"
 
 [[package]]
 name = "xarray"
-version = "0.18.1.dev5+g234b40a3"
+version = "0.18.0"
 description = "N-D labeled arrays and datasets in Python"
 category = "main"
 optional = false
 python-versions = ">=3.7"
-develop = false
 
 [package.dependencies]
 numpy = ">=1.17"
@@ -1593,12 +1589,6 @@ docs = ["netcdf4", "h5netcdf", "scipy", "pydap", "zarr", "fsspec", "cftime", "ra
 io = ["netcdf4", "h5netcdf", "scipy", "pydap", "zarr", "fsspec", "cftime", "rasterio", "cfgrib"]
 parallel = ["dask"]
 viz = ["matplotlib", "seaborn", "nc-time-axis"]
-
-[package.source]
-type = "git"
-url = "https://github.com/pydata/xarray"
-reference = "master"
-resolved_reference = "234b40a37e484a795e6b12916315c80d70570b27"
 
 [[package]]
 name = "yarl"
@@ -1643,7 +1633,7 @@ heapdict = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "d3997858f8dd640d8f3963e768f8591670fbcc8577db1d0f79287ebf0591a749"
+content-hash = "270ac53c5c61d00868fd9adb4833c7c0cd8c37f2ccabe0dc54eb32b900c3ea4c"
 
 [metadata.files]
 adal = [
@@ -1651,7 +1641,7 @@ adal = [
     {file = "adal-1.2.7.tar.gz", hash = "sha256:d74f45b81317454d96e982fd1c50e6fb5c99ac2223728aea8764433a39f566f1"},
 ]
 adlfs = [
-    {file = "adlfs-0.7.4.tar.gz", hash = "sha256:ddd0100199c124e4e15e59595f90183ad35855e192b73df1bb000ae509139c4a"},
+    {file = "adlfs-0.7.5.tar.gz", hash = "sha256:8b60119578fd942ae831305b7ff65d3e61c11a6bc07a882c91504a3306919a6b"},
 ]
 aiohttp = [
     {file = "aiohttp-3.7.4.post0-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:3cf75f7cdc2397ed4442594b935a11ed5569961333d49b7539ea741be2cc79d5"},
@@ -1904,8 +1894,8 @@ dask = [
     {file = "dask-2021.4.1.tar.gz", hash = "sha256:195e4eeb154222ea7a1c368119b5f321ee4ec9d78531471fe0145a527f744aa8"},
 ]
 dask-kubernetes = [
-    {file = "dask-kubernetes-2021.3.0.tar.gz", hash = "sha256:bfecdefc0e34112472b10b099b43dbdbd30009362a797652c7c1184da6ab60fe"},
-    {file = "dask_kubernetes-2021.3.0-py3-none-any.whl", hash = "sha256:1d7f059c5292bb547c2f7a688f4baee7028e32550c1770ffdddc91760b52033d"},
+    {file = "dask-kubernetes-2021.3.1.tar.gz", hash = "sha256:2adfad8317053e86e59365ea54d30ed8be1a0cd119e2b564d889444cad0102f0"},
+    {file = "dask_kubernetes-2021.3.1-py3-none-any.whl", hash = "sha256:271a68ad09108c94d7bf3fe20f426104bec4ccb51ec6dbf944ea26c3a8ff5eeb"},
 ]
 distributed = [
     {file = "distributed-2021.4.1-py3-none-any.whl", hash = "sha256:fe0e005e9aa79d68e185008bd2ce6562388311efd1c59a04ab6127ee631b8808"},
@@ -1989,8 +1979,8 @@ jsonpickle = [
     {file = "jsonpickle-2.0.0.tar.gz", hash = "sha256:0be49cba80ea6f87a168aa8168d717d00c6ca07ba83df3cec32d3b30bfe6fb9a"},
 ]
 kubernetes = [
-    {file = "kubernetes-11.0.0b2-py2.py3-none-any.whl", hash = "sha256:a5e8a84a6e795aee43a0f9a70fd44361f4dd6b359cf4feb12158895bee276633"},
-    {file = "kubernetes-11.0.0b2.tar.gz", hash = "sha256:940851c9e181fba9fa6ec81db1a8359faccd7cf99e7bd28ec65fb5b12199a43b"},
+    {file = "kubernetes-12.0.1-py2.py3-none-any.whl", hash = "sha256:23c85d8571df8f56e773f1a413bc081537536dc47e2b5e8dc2e6262edb2c57ca"},
+    {file = "kubernetes-12.0.1.tar.gz", hash = "sha256:ec52ea01d52e2ec3da255992f7e859f3a76f2bdb51cf65ba8cd71dfc309d8daa"},
 ]
 kubernetes-asyncio = [
     {file = "kubernetes_asyncio-12.1.0.tar.gz", hash = "sha256:d6f0dccc6d6131017549b115d3ca076b2b2557646975b0e624d016926411e48d"},
@@ -2000,8 +1990,8 @@ locket = [
     {file = "locket-0.2.1.tar.gz", hash = "sha256:3e1faba403619fe201552f083f1ecbf23f550941bc51985ac6ed4d02d25056dd"},
 ]
 marshmallow = [
-    {file = "marshmallow-3.12.0-py2.py3-none-any.whl", hash = "sha256:822dfacdf6ac5c2f514182bcddde0cc60d943ca46e4006c1e14761a0605bfc0f"},
-    {file = "marshmallow-3.12.0.tar.gz", hash = "sha256:77ce3097c06d93de37394e0e0bf217dacbb4eabe0b88129e315e10d8790b1354"},
+    {file = "marshmallow-3.12.1-py2.py3-none-any.whl", hash = "sha256:b45cde981d1835145257b4a3c5cb7b80786dcf5f50dd2990749a50c16cb48e01"},
+    {file = "marshmallow-3.12.1.tar.gz", hash = "sha256:8050475b70470cc58f4441ee92375db611792ba39ca1ad41d39cad193ea9e040"},
 ]
 marshmallow-oneofschema = [
     {file = "marshmallow-oneofschema-2.1.0.tar.gz", hash = "sha256:b30cbd21928b6ced3e161186098c4ca48e470ede82c2475f7f4e1bb0edc91e68"},
@@ -2141,30 +2131,30 @@ numcodecs = [
     {file = "numcodecs-0.7.3.tar.gz", hash = "sha256:022b12ad83eb623ec53f154859d49f6ec43b15c36052fa864eaf2d9ee786dd85"},
 ]
 numpy = [
-    {file = "numpy-1.20.2-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:e9459f40244bb02b2f14f6af0cd0732791d72232bbb0dc4bab57ef88e75f6935"},
-    {file = "numpy-1.20.2-cp37-cp37m-manylinux1_i686.whl", hash = "sha256:a8e6859913ec8eeef3dbe9aed3bf475347642d1cdd6217c30f28dee8903528e6"},
-    {file = "numpy-1.20.2-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:9cab23439eb1ebfed1aaec9cd42b7dc50fc96d5cd3147da348d9161f0501ada5"},
-    {file = "numpy-1.20.2-cp37-cp37m-manylinux2010_i686.whl", hash = "sha256:9c0fab855ae790ca74b27e55240fe4f2a36a364a3f1ebcfd1fb5ac4088f1cec3"},
-    {file = "numpy-1.20.2-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:61d5b4cf73622e4d0c6b83408a16631b670fc045afd6540679aa35591a17fe6d"},
-    {file = "numpy-1.20.2-cp37-cp37m-manylinux2014_aarch64.whl", hash = "sha256:d15007f857d6995db15195217afdbddfcd203dfaa0ba6878a2f580eaf810ecd6"},
-    {file = "numpy-1.20.2-cp37-cp37m-win32.whl", hash = "sha256:d76061ae5cab49b83a8cf3feacefc2053fac672728802ac137dd8c4123397677"},
-    {file = "numpy-1.20.2-cp37-cp37m-win_amd64.whl", hash = "sha256:bad70051de2c50b1a6259a6df1daaafe8c480ca98132da98976d8591c412e737"},
-    {file = "numpy-1.20.2-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:719656636c48be22c23641859ff2419b27b6bdf844b36a2447cb39caceb00935"},
-    {file = "numpy-1.20.2-cp38-cp38-manylinux1_i686.whl", hash = "sha256:aa046527c04688af680217fffac61eec2350ef3f3d7320c07fd33f5c6e7b4d5f"},
-    {file = "numpy-1.20.2-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:2428b109306075d89d21135bdd6b785f132a1f5a3260c371cee1fae427e12727"},
-    {file = "numpy-1.20.2-cp38-cp38-manylinux2010_i686.whl", hash = "sha256:e8e4fbbb7e7634f263c5b0150a629342cc19b47c5eba8d1cd4363ab3455ab576"},
-    {file = "numpy-1.20.2-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:edb1f041a9146dcf02cd7df7187db46ab524b9af2515f392f337c7cbbf5b52cd"},
-    {file = "numpy-1.20.2-cp38-cp38-manylinux2014_aarch64.whl", hash = "sha256:c73a7975d77f15f7f68dacfb2bca3d3f479f158313642e8ea9058eea06637931"},
-    {file = "numpy-1.20.2-cp38-cp38-win32.whl", hash = "sha256:6c915ee7dba1071554e70a3664a839fbc033e1d6528199d4621eeaaa5487ccd2"},
-    {file = "numpy-1.20.2-cp38-cp38-win_amd64.whl", hash = "sha256:471c0571d0895c68da309dacee4e95a0811d0a9f9f532a48dc1bea5f3b7ad2b7"},
-    {file = "numpy-1.20.2-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:4703b9e937df83f5b6b7447ca5912b5f5f297aba45f91dbbbc63ff9278c7aa98"},
-    {file = "numpy-1.20.2-cp39-cp39-manylinux2010_i686.whl", hash = "sha256:abc81829c4039e7e4c30f7897938fa5d4916a09c2c7eb9b244b7a35ddc9656f4"},
-    {file = "numpy-1.20.2-cp39-cp39-manylinux2010_x86_64.whl", hash = "sha256:377751954da04d4a6950191b20539066b4e19e3b559d4695399c5e8e3e683bf6"},
-    {file = "numpy-1.20.2-cp39-cp39-manylinux2014_aarch64.whl", hash = "sha256:6e51e417d9ae2e7848314994e6fc3832c9d426abce9328cf7571eefceb43e6c9"},
-    {file = "numpy-1.20.2-cp39-cp39-win32.whl", hash = "sha256:780ae5284cb770ade51d4b4a7dce4faa554eb1d88a56d0e8b9f35fca9b0270ff"},
-    {file = "numpy-1.20.2-cp39-cp39-win_amd64.whl", hash = "sha256:924dc3f83de20437de95a73516f36e09918e9c9c18d5eac520062c49191025fb"},
-    {file = "numpy-1.20.2-pp37-pypy37_pp73-manylinux2010_x86_64.whl", hash = "sha256:97ce8b8ace7d3b9288d88177e66ee75480fb79b9cf745e91ecfe65d91a856042"},
-    {file = "numpy-1.20.2.zip", hash = "sha256:878922bf5ad7550aa044aa9301d417e2d3ae50f0f577de92051d739ac6096cee"},
+    {file = "numpy-1.20.3-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:70eb5808127284c4e5c9e836208e09d685a7978b6a216db85960b1a112eeace8"},
+    {file = "numpy-1.20.3-cp37-cp37m-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:6ca2b85a5997dabc38301a22ee43c82adcb53ff660b89ee88dded6b33687e1d8"},
+    {file = "numpy-1.20.3-cp37-cp37m-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:c5bf0e132acf7557fc9bb8ded8b53bbbbea8892f3c9a1738205878ca9434206a"},
+    {file = "numpy-1.20.3-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:db250fd3e90117e0312b611574cd1b3f78bec046783195075cbd7ba9c3d73f16"},
+    {file = "numpy-1.20.3-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:637d827248f447e63585ca3f4a7d2dfaa882e094df6cfa177cc9cf9cd6cdf6d2"},
+    {file = "numpy-1.20.3-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:8b7bb4b9280da3b2856cb1fc425932f46fba609819ee1c62256f61799e6a51d2"},
+    {file = "numpy-1.20.3-cp37-cp37m-win32.whl", hash = "sha256:67d44acb72c31a97a3d5d33d103ab06d8ac20770e1c5ad81bdb3f0c086a56cf6"},
+    {file = "numpy-1.20.3-cp37-cp37m-win_amd64.whl", hash = "sha256:43909c8bb289c382170e0282158a38cf306a8ad2ff6dfadc447e90f9961bef43"},
+    {file = "numpy-1.20.3-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:f1452578d0516283c87608a5a5548b0cdde15b99650efdfd85182102ef7a7c17"},
+    {file = "numpy-1.20.3-cp38-cp38-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:6e51534e78d14b4a009a062641f465cfaba4fdcb046c3ac0b1f61dd97c861b1b"},
+    {file = "numpy-1.20.3-cp38-cp38-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:e515c9a93aebe27166ec9593411c58494fa98e5fcc219e47260d9ab8a1cc7f9f"},
+    {file = "numpy-1.20.3-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c1c09247ccea742525bdb5f4b5ceeacb34f95731647fe55774aa36557dbb5fa4"},
+    {file = "numpy-1.20.3-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:66fbc6fed94a13b9801fb70b96ff30605ab0a123e775a5e7a26938b717c5d71a"},
+    {file = "numpy-1.20.3-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:ea9cff01e75a956dbee133fa8e5b68f2f92175233de2f88de3a682dd94deda65"},
+    {file = "numpy-1.20.3-cp38-cp38-win32.whl", hash = "sha256:f39a995e47cb8649673cfa0579fbdd1cdd33ea497d1728a6cb194d6252268e48"},
+    {file = "numpy-1.20.3-cp38-cp38-win_amd64.whl", hash = "sha256:1676b0a292dd3c99e49305a16d7a9f42a4ab60ec522eac0d3dd20cdf362ac010"},
+    {file = "numpy-1.20.3-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:830b044f4e64a76ba71448fce6e604c0fc47a0e54d8f6467be23749ac2cbd2fb"},
+    {file = "numpy-1.20.3-cp39-cp39-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:55b745fca0a5ab738647d0e4db099bd0a23279c32b31a783ad2ccea729e632df"},
+    {file = "numpy-1.20.3-cp39-cp39-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:5d050e1e4bc9ddb8656d7b4f414557720ddcca23a5b88dd7cff65e847864c400"},
+    {file = "numpy-1.20.3-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a9c65473ebc342715cb2d7926ff1e202c26376c0dcaaee85a1fd4b8d8c1d3b2f"},
+    {file = "numpy-1.20.3-cp39-cp39-win32.whl", hash = "sha256:16f221035e8bd19b9dc9a57159e38d2dd060b48e93e1d843c49cb370b0f415fd"},
+    {file = "numpy-1.20.3-cp39-cp39-win_amd64.whl", hash = "sha256:6690080810f77485667bfbff4f69d717c3be25e5b11bb2073e76bb3f578d99b4"},
+    {file = "numpy-1.20.3-pp37-pypy37_pp73-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:4e465afc3b96dbc80cf4a5273e5e2b1e3451286361b4af70ce1adb2984d392f9"},
+    {file = "numpy-1.20.3.zip", hash = "sha256:e55185e51b18d788e49fe8305fd73ef4470596b33fc2c1ceb304566b99c71a69"},
 ]
 oauthlib = [
     {file = "oauthlib-3.1.0-py2.py3-none-any.whl", hash = "sha256:df884cd6cbe20e32633f1db1072e9356f53638e4361bef4e8b03c9127c9328ea"},
@@ -2188,7 +2178,10 @@ pandas = [
     {file = "pandas-1.2.4-cp39-cp39-win_amd64.whl", hash = "sha256:2b063d41803b6a19703b845609c0b700913593de067b552a8b24dd8eeb8c9895"},
     {file = "pandas-1.2.4.tar.gz", hash = "sha256:649ecab692fade3cbfcf967ff936496b0cfba0af00a55dfaacd82bdda5cb2279"},
 ]
-pangeo-forge-recipes = []
+pangeo-forge-recipes = [
+    {file = "pangeo-forge-recipes-0.3.3.tar.gz", hash = "sha256:23c9b0f9e7f0200b88173ea46a23eb543a4bb7b6d60f8d0aecd965528e681d66"},
+    {file = "pangeo_forge_recipes-0.3.3-py3-none-any.whl", hash = "sha256:acbadb9215a16d70c02bf7df974664a7fdaef96bb21511e64d0bc15567012918"},
+]
 partd = [
     {file = "partd-1.2.0-py3-none-any.whl", hash = "sha256:5c3a5d70da89485c27916328dc1e26232d0e270771bd4caef4a5124b6a457288"},
     {file = "partd-1.2.0.tar.gz", hash = "sha256:aa67897b84d522dcbc86a98b942afab8c6aa2f7f677d904a616b74ef5ddbc3eb"},
@@ -2225,8 +2218,8 @@ portalocker = [
     {file = "portalocker-1.7.1.tar.gz", hash = "sha256:6d6f5de5a3e68c4dd65a98ec1babb26d28ccc5e770e07b672d65d5a35e4b2d8a"},
 ]
 prefect = [
-    {file = "prefect-0.14.17-py3-none-any.whl", hash = "sha256:3796992dbacdc4b7daee9c39df47c7ade5d9ba804273994dfec205cae5a56a21"},
-    {file = "prefect-0.14.17.tar.gz", hash = "sha256:fe2900d06bc80d904c89b29bc3c6fd8a88e8fd3814968cccb8306932c14e4a05"},
+    {file = "prefect-0.14.19-py3-none-any.whl", hash = "sha256:64a4fb1a5c09f94c11f071d9bba2b50fcbfab1140becb05c78df7d45a8c73142"},
+    {file = "prefect-0.14.19.tar.gz", hash = "sha256:84d6eef4ed8082f8c3c612c10881484ccf2e5d0076c69dadb927f4011972cad9"},
 ]
 psutil = [
     {file = "psutil-5.8.0-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:0066a82f7b1b37d334e68697faba68e5ad5e858279fd6351c8ca6024e8d6ba64"},
@@ -2506,7 +2499,10 @@ websocket-client = [
     {file = "websocket-client-0.59.0.tar.gz", hash = "sha256:d376bd60eace9d437ab6d7ee16f4ab4e821c9dae591e1b783c58ebd8aaf80c5c"},
     {file = "websocket_client-0.59.0-py2.py3-none-any.whl", hash = "sha256:2e50d26ca593f70aba7b13a489435ef88b8fc3b5c5643c1ce8808ff9b40f0b32"},
 ]
-xarray = []
+xarray = [
+    {file = "xarray-0.18.0-py3-none-any.whl", hash = "sha256:c5b665d18fabb4071312619e975094a20a0f280d45fbf6a7a403634cdc33ccef"},
+    {file = "xarray-0.18.0.tar.gz", hash = "sha256:c0b0d24ee43db2bec14a95503266c81181586174004d1b60860c1091e4f74ac8"},
+]
 yarl = [
     {file = "yarl-1.6.3-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:0355a701b3998dcd832d0dc47cc5dedf3874f966ac7f870e0f3a6788d802d434"},
     {file = "yarl-1.6.3-cp36-cp36m-manylinux1_i686.whl", hash = "sha256:bafb450deef6861815ed579c7a6113a879a6ef58aed4c3a4be54400ae8871478"},

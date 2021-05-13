@@ -9,11 +9,12 @@ python = "^3.8"
 prefect = {extras = ["azure", "kubernetes"], version = "^0.14.17"}
 python-dotenv = "^0.17.0"
 zarr = "2.7.0"
-pangeo-forge-recipes = {git = "https://github.com/pangeo-forge/pangeo-forge.git"}
+pangeo-forge-recipes = "^0.3.3"
 pandas = "^1.2.4"
 adlfs = "^0.7.4"
 h5py = "^3.2.1"
 h5netcdf = "^0.11.0"
+click = "7.1.2"
 
 
 [tool.poetry.dev-dependencies]
