@@ -15,13 +15,13 @@ def chunk(sources: List[Any], size: int) -> List[Tuple[Any, ...]]:
 
 @task
 def combine_and_write(
-    sources: List[str], target: str, append_dim: str, concat_dim: str
+    sources: List[str], target: str, fs, append_dim: str, concat_dim: str
 ) -> List[str]:
     try:
         double_open_files = [fsspec.open(url).open() for url in sources]
         ds = xr.open_mfdataset(double_open_files, combine="nested", concat_dim=concat_dim)
         ds = ds.chunk({append_dim: len(sources)})
-        mapper = fsspec.get_mapper(target)
+        mapper = fs.get_mapper(target)
 
         if not len(mapper):
             kwargs = dict(mode="w")
