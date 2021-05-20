@@ -1,19 +1,15 @@
 import json
 import logging
 import os
-from collections.abc import MutableMapping
 from functools import wraps
 
-import azure.storage.blob
 import pandas as pd
-import prefect
 from adlfs import AzureBlobFileSystem
-from azure.core.exceptions import ResourceNotFoundError
 from dask_kubernetes.objects import make_pod_spec
 from pangeo_forge_recipes.patterns import pattern_from_file_sequence
 from pangeo_forge_recipes.recipes import XarrayZarrRecipe
 from pangeo_forge_recipes.recipes.base import BaseRecipe
-from pangeo_forge_recipes.storage import FSSpecTarget
+from pangeo_forge_recipes.storage import CacheFSSpecTarget, FSSpecTarget
 from prefect import storage
 from prefect.executors.dask import DaskExecutor
 from prefect.run_configs.kubernetes import KubernetesRun
@@ -37,9 +33,15 @@ def register_recipe(recipe: BaseRecipe):
     fs_remote = AzureBlobFileSystem(
         connection_string=os.environ["FLOW_STORAGE_CONNECTION_STRING"]
     )
-    target = FSSpecTarget(fs_remote, root_path="azurerecipetest/")
+    target = FSSpecTarget(
+        fs_remote,
+        root_path=f"abfs://{os.environ['FLOW_STORAGE_CONTAINER']}/azurerecipetest/",
+    )
     recipe.target = target
-    recipe.input_cache = FSSpecTarget(fs_remote, root_path="azurerecipetestcache/")
+    recipe.input_cache = CacheFSSpecTarget(
+        fs_remote,
+        root_path=f"abfs://{os.environ['FLOW_STORAGE_CONTAINER']}/azurerecipetestcache/",
+    )
     recipe.metadata_cache = target
 
     executor = PrefectPipelineExecutor()
