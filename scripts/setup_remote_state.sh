@@ -11,6 +11,9 @@ then
     rm -rf "./terraform/.terraform"
 fi
 
+# Login
+az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+
 # Create resource group
 az group create --name $RESOURCE_GROUP_NAME --location "$TF_VAR_region" --tags $TAGS
 
