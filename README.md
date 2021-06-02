@@ -78,6 +78,21 @@ $ az login # Opens up a browser window to login with
 
 If you notice that the `Subscription` you intend to use has `"isDefault": false`, then refer to [this documentation](https://docs.microsoft.com/en-us/cli/azure/manage-azure-subscriptions-azure-cli#change-the-active-subscription) on how to switch your default `Subsciption`.
 
+#### Getting your Subscription ID
+
+You will need to get the ID for the Subscription that is set to `"isDefault": true`, you can do this with:
+
+```bash
+$ az account list -o table
+Name                CloudName    SubscriptionId                        State    IsDefault
+------------------  -----------  ------------------------------------  -------  -----------
+sub-0               AzureCloud   <an-id>                               Enabled  False
+sub-1               AzureCloud   <an-id>                               Enabled  True
+sub-2               AzureCloud   <an-id>                               Enabled  False
+```
+
+Take note of the `SubscriptionId` value.
+
 #### Creating a Service Principal
 
 You will then need to create a `Service Principal` to deploy as:
@@ -92,6 +107,8 @@ $ az ad sp create-for-rbac --name "<name-for-your-service-principal>"
   "tenant": "<a-tenant-id>"
 }
 ```
+
+Take note of the values of `appId`, `password`, and `tenant`.
 
 #### Adding Service Principal permissions
 
@@ -176,6 +193,11 @@ A `.env` file is expected at the root of the repository to store variables used 
 
 ```bash
 # SET BY YOU MANUALLY:
+
+ARM_SUBSCRIPTION_ID="<your-subscription-id>" # See [Development > Getting Started > Azure Credential setup > Getting your Subscription ID]
+ARM_TENANT_ID="<your-service-principals-tenant-id>" # See [Development > Getting Started > Azure Credential setup > Creating a Service Principal]
+ARM_CLIENT_ID="<your-service-principals-app-id>" # See [Development > Getting Started > Azure Credential setup > Creating a Service Principal]
+ARM_CLIENT_SECRET="<your-service-principals-password>" # See [Development > Getting Started > Azure Credential setup > Creating a Service Principal]
 
 TF_VAR_owner="<your-name>"
 TF_VAR_identifier="<a-unique-value-to-tie-to-your-deployment>"
