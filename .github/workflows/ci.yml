@@ -13,7 +13,7 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 0.15.0
+          terraform_version: 0.15.1
 
       - name: Linting
         run: |
