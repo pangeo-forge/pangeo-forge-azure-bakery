@@ -40,7 +40,9 @@ def register_recipe(recipe: BaseRecipe):
     recipe.target = target
     recipe.input_cache = CacheFSSpecTarget(
         fs_remote,
-        root_path=f"abfs://{os.environ['FLOW_STORAGE_CONTAINER']}/azurerecipetestcache/",
+        root_path=(
+            f"abfs://{os.environ['FLOW_STORAGE_CONTAINER']}/azurerecipetestcache/"
+        ),
     )
     recipe.metadata_cache = target
 

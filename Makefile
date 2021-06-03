@@ -12,11 +12,16 @@ destroy-remote-state:
 init:
 	poetry run dotenv run terraform -chdir="terraform/" init
 
-lint: init
+lint:
 	terraform -chdir="terraform/" validate
+	poetry run flake8 flow_test/ scripts/
+	poetry run isort --check-only --profile black flow_test/ scripts/
+	poetry run black --check --diff flow_test/ scripts/
 
 format:
 	terraform -chdir="terraform/" fmt
+	poetry run isort --profile black flow_test/ scripts/
+	poetry run black flow_test/ scripts/
 
 plan: init
 	poetry run dotenv run terraform -chdir="terraform/" plan
