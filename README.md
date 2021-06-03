@@ -10,7 +10,7 @@ This repository serves as the provider of an Terraform Application which deploys
 * [🚀 Deployment - Prerequisites](#prerequisites)
 * [🚀 Deployment - Deploying](#deploying)
 * [🚀 Deployment - Destroying](#destroying)
-* [📊 Flows - Registering Flows](#registering-flows)
+* [📊 Flows - Registering the test Recipe](#registering-the-test-recipe)
 * [📊 Flows - Logging](#logging)
 
 # Development
@@ -396,16 +396,16 @@ $ make destroy-remote-state # Uses Azure CLI to destroy the Remote State infrast
 
 # Flows
 
-## Registering Flows
+## Registering the test Recipe
 
-For quick testing of your Bakery deployment, there are Flows within `flow_test/` that you can register and run. Before you register any of the example Flows, you must have the values of `PREFECT__CLOUD__AUTH_TOKEN`, `PREFECT_PROJECT`, `PREFECT__CLOUD__AGENT__LABELS`, `FLOW_STORAGE_CONTAINER`, and `FLOW_STORAGE_CONNECTION_STRING` present and populated in `.env`. You must also have run [`make install`](#makefile-goodness).
+For quick testing of your Bakery deployment, there a Recipe setup as a Flow within `flow_test/` that you can register and run. Before you register the example Flow, you must have the values of `PREFECT__CLOUD__AUTH_TOKEN`, `PREFECT_PROJECT`, `PREFECT__CLOUD__AGENT__LABELS`, `FLOW_STORAGE_CONTAINER`, and `FLOW_STORAGE_CONNECTION_STRING` present and populated in `.env`. You must also have run [`make install`](#makefile-goodness).
 
-When your `.env` is populated and you've installed the project dependencies, you can register a Flow by running:
+When your `.env` is populated and you've installed the project dependencies, you can register the Flow by running:
 
 ```
-$ poetry run dotenv run python3 flow_test/<flow-file.py>
+$ poetry run dotenv run python3 flow_test/oisst_recipe.py
 
-[2021-04-29 13:28:22+0100] INFO - prefect.Azure | Uploading hello-flow/2021-04-29t12-28-21-953051-00-00 to <identifier>-bakery-flow-storage-container
+[2021-04-29 13:28:22+0100] INFO - prefect.Azure | Uploading test-noaa-flow/2021-06-03t10-07-21-944813-00-00 to <identifier>-bakery-flow-storage-container
 Flow URL: https://cloud.prefect.io/<your-account>/flow/aef82344-8a31-485b-a189-bc1398755f9e
  └── ID: ca02500f-97ea-4605-9f66-1cccb457a3c0
  └── Project: <PREFECT_PROJECT>
@@ -417,6 +417,8 @@ You can then navigate to [cloud.prefect.io](https://cloud.prefect.io/), find you
 ## Logging
 
 The deployment sets up a `Log Analytics Workspace` which AKS then references when we setup an `oms_agent` (Operations Management Suite) addon for the Bakery cluster. This enables us to have long-lived logging for the Kubernetes pods so that we can keep track of Flow runs for debugging.
+
+### Prefect Flow Runner Logs
 
 Currently, the easiest way I've found to get hold of the logs for the Flow you've just run goes as follows:
 
@@ -443,3 +445,34 @@ Currently, the easiest way I've found to get hold of the logs for the Flow you'v
     ![Result of the logs query on Azure](./readme_images/container_logs_query_result.png)
 
 The default behaviour of AKS is to only display live logs for Pods, hence the need to deploy the `Log Analytics Workspace`. The default Kubernetes behaviour for a Succeeded Pod is to delete that Pod, so we have to query for the `ContainerID` of the Pod that ran our specific flow as there's no other means of retrieving it within the Azure Portal.
+
+### Prefect Flow Dask Worker Logs
+
+The easiest way I've found so far to get hold of the logs for Dask, for the Flow you've just run goes as follows:
+
+1. Navigate to your Bakery Cluster Logs in the Azure Portal:
+![The Azure Portal for a Kubernetes Cluster](./readme_images/bakery_cluster_logs.png)
+
+2. Run the following query, filling out the required sections:
+    ```
+    let container_ids = toscalar(KubePodInventory
+    | where ContainerCreationTimeStamp >= datetime("<utc-timestamp-of-just-before-you-ran-your-flow>") // e.g "2021-01-20 10:03:12Z"
+    | extend labels = todynamic(PodLabel)[0]
+    | where labels.flow contains "<flow-name>" and labels["dask.org/component"] contains "worker"
+    | project PodUid, ContainerID
+    | distinct PodUid, ContainerID
+    | summarize make_set(ContainerID));
+    ContainerLog
+    | where (container_ids) contains ContainerID
+    | order by ContainerID, TimeGenerated asc
+    | project ContainerID, TimeGenerated, LogEntry
+
+    // This query does the following:
+    // 1. Queries KubePodInventory for Pods with Container Creation times equal to or after your specified datetime
+    // 2. Extends the results to include the Pod labels
+    // 3. Filters on whether the Pod has the labels `flow=<flow-name>` and `dask.org/component="worker"`
+    // 4. Collects all the ContainerIDs into a list
+    // 5. Assigns this list to the variable `container_ids`
+    // 6. Queries ContainerLog for all logs where the Container ID is in `container_ids`
+    ```
+    ![Result of the Dask logs query on Azure](./readme_images/dask_logs_query_result.png)
