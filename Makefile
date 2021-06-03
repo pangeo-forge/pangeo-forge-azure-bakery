@@ -13,7 +13,7 @@ init:
 	poetry run dotenv run terraform -chdir="terraform/" init
 
 lint-init:
-	poetry run dotenv run terraform -chdir="terraform/" init -backend=false
+	terraform -chdir="terraform/" init -backend=false
 
 lint: lint-init
 	terraform -chdir="terraform/" validate
