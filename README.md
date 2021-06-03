@@ -238,13 +238,17 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 
 > This will run `terraform init` within the `terraform/` directory, installing any providers required for deployment. You **must** have run `make setup-remote-state` beforehand
 
+**`make lint-init`**
+
+> This will run `terraform init -backend=false` within the `terraform/` directory, installing any providers required for terraform to run `validate`. You **must** have run `make setup-remote-state` beforehand
+
 **`make lint`**
 
-> This will run `terraform validate` within the `terraform/` directory, showing you anything that is incorrect in your Terraform scripts. You **must** have run `make setup-remote-state` beforehand
+> This will run `terraform validate` within the `terraform/` directory, showing you anything that is incorrect in your Terraform scripts. It also runs isort, black, and flake8 to highlight any linting issues in `flow_test/` and `scripts/`
 
 **`make format`**
 
-> This will run `terraform fmt` within the `terraform/` directory, this **will** modify files if issues were found
+> This will run `terraform fmt` within the `terraform/` directory. It also runs isort and black in `flow_test/` and `scripts/`. This **will** modify files if issues were found
 
 **`make plan`**
 

@@ -1,4 +1,4 @@
-.PHONEY: install setup-remote-state destroy-remote-state init lint format plan apply destroy configure-kubectl setup-agent build-and-push-image retrieve-flow-storage-values deploy-bakery
+.PHONY: install setup-remote-state destroy-remote-state init lint-init lint format plan apply destroy configure-kubectl setup-agent build-and-push-image retrieve-flow-storage-values deploy-bakery
 
 install:
 	poetry install
@@ -12,7 +12,10 @@ destroy-remote-state:
 init:
 	poetry run dotenv run terraform -chdir="terraform/" init
 
-lint:
+lint-init:
+	poetry run dotenv run terraform -chdir="terraform/" init -backend=false
+
+lint: lint-init
 	terraform -chdir="terraform/" validate
 	poetry run flake8 flow_test/ scripts/
 	poetry run isort --check-only --profile black flow_test/ scripts/
