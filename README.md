@@ -115,69 +115,11 @@ Take note of the values of `appId`, `password`, and `tenant`.
 Your service principal will need a few permissions added to it, for these you'll need to get its `objectId`, you can get this by running:
 
 ```bash
-$ az ad sp list --display-name "<name-for-your-service-principal>"
-[
-  {
-    "accountEnabled": "True",
-    "addIns": [],
-    "alternativeNames": [],
-    "appDisplayName": "<name-for-your-service-principal>",
-    "appId": "<a-app-id>",
-    "appOwnerTenantId": "<a-tenant-id>",
-    "appRoleAssignmentRequired": false,
-    "appRoles": [],
-    "applicationTemplateId": null,
-    "deletionTimestamp": null,
-    "displayName": "<name-for-your-service-principal>",
-    "errorUrl": null,
-    "homepage": "https://<name-for-your-service-principal>",
-    "informationalUrls": {
-      "marketing": null,
-      "privacy": null,
-      "support": null,
-      "termsOfService": null
-    },
-    "keyCredentials": [],
-    "logoutUrl": null,
-    "notificationEmailAddresses": [],
-    "oauth2Permissions": [
-      {
-        "adminConsentDescription": "Allow the application to access <name-for-your-service-principal> on behalf of the signed-in user.",
-        "adminConsentDisplayName": "Access <name-for-your-service-principal>",
-        "id": "<an-id>",
-        "isEnabled": true,
-        "type": "User",
-        "userConsentDescription": "Allow the application to access <name-for-your-service-principal> on your behalf.",
-        "userConsentDisplayName": "Access <name-for-your-service-principal>",
-        "value": "user_impersonation"
-      }
-    ],
-    "objectId": "<a-object-id>",
-    "objectType": "ServicePrincipal",
-    "odata.type": "Microsoft.DirectoryServices.ServicePrincipal",
-    "passwordCredentials": [],
-    "preferredSingleSignOnMode": null,
-    "preferredTokenSigningKeyEndDateTime": null,
-    "preferredTokenSigningKeyThumbprint": null,
-    "publisherName": "<a-publisher-name>",
-    "replyUrls": [],
-    "samlMetadataUrl": null,
-    "samlSingleSignOnSettings": null,
-    "servicePrincipalNames": [
-      "http://<name-for-your-service-principal>",
-      "<a-service-principal-id>"
-    ],
-    "servicePrincipalType": "Application",
-    "signInAudience": "AzureADMyOrg",
-    "tags": [],
-    "tokenEncryptionKeyId": null
-  }
-]
+$ az ad sp list --display-name "pangeo-forge-sp" --query="[].objectId" -o tsv
+<objectId>
 ```
 
-From the resultant JSON output to the screen, copy the value of `objectID`.
-
-You can then run:
+You can then use that `objectId` to run:
 
 ```bash
 $ az role assignment create --assignee "<objectId>" --role "Storage Blob Data Contributor"
