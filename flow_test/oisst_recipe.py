@@ -14,15 +14,28 @@ from prefect import storage
 from prefect.executors.dask import DaskExecutor
 from prefect.run_configs.kubernetes import KubernetesRun
 from rechunker.executors import PrefectPipelineExecutor
+from distributed import get_worker
 
 
 def set_log_level(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        logging.basicConfig()
-        logging.getLogger("pangeo_forge.recipes.xarray_zarr").setLevel(
-            level=logging.DEBUG
-        )
+        level = logging.DEBUG
+
+        logger = logging.getLogger("pangeo_forge_recipes")
+        logger.setLevel(level)
+        handler = logging.StreamHandler()
+        handler.setLevel(level)
+        formatter = logging.Formatter("[%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(funcName)10s() - %(thread)d] %(message)s")
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+
+        try:
+            worker = get_worker()
+            worker._setup_logging(logger)
+        except ValueError:
+            pass
+
         result = func(*args, **kwargs)
         return result
 
