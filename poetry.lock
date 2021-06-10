@@ -1102,11 +1102,12 @@ test = ["pytest (>=5.0.1)", "pytest-xdist", "hypothesis (>=3.58)"]
 
 [[package]]
 name = "pangeo-forge-recipes"
-version = "0.3.4"
+version = "0.1.dev386+g570f59d"
 description = "Pipeline tools for building and publishing analysis ready datasets."
 category = "main"
 optional = false
 python-versions = ">=3.7"
+develop = false
 
 [package.dependencies]
 click = "*"
@@ -1119,6 +1120,12 @@ zarr = ">=2.6.0"
 
 [package.extras]
 dev = ["pytest", "pytest-sugar", "pytest-cov", "pytest-lazy-fixture", "scipy", "netcdf4", "h5netcdf", "zarr"]
+
+[package.source]
+type = "git"
+url = "https://github.com/TomAugspurger/pangeo-forge"
+reference = "feature/lock-timeout"
+resolved_reference = "570f59d75e10ad639bb5e82ecfd6bc84aa1e8bf2"
 
 [[package]]
 name = "partd"
@@ -1599,7 +1606,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "websocket-client"
-version = "1.0.1"
+version = "1.1.0"
 description = "WebSocket client for Python with low level API options"
 category = "main"
 optional = false
@@ -1668,7 +1675,7 @@ heapdict = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "3.8.10"
-content-hash = "3eee3a061a7bdca1a66886c00a84c08b7e87a3636457b9d8afdb59fdffa5cd3a"
+content-hash = "4d18c7de9e3c3a772c2a5b7ad377230114584988cdd6a70b78245a29960ce056"
 
 [metadata.files]
 adal = [
@@ -2222,10 +2229,7 @@ pandas = [
     {file = "pandas-1.2.4-cp39-cp39-win_amd64.whl", hash = "sha256:2b063d41803b6a19703b845609c0b700913593de067b552a8b24dd8eeb8c9895"},
     {file = "pandas-1.2.4.tar.gz", hash = "sha256:649ecab692fade3cbfcf967ff936496b0cfba0af00a55dfaacd82bdda5cb2279"},
 ]
-pangeo-forge-recipes = [
-    {file = "pangeo-forge-recipes-0.3.4.tar.gz", hash = "sha256:9f33c904478cfbdd68c9bd708b253e8675aac295551eacabb8d11779d46e068a"},
-    {file = "pangeo_forge_recipes-0.3.4-py3-none-any.whl", hash = "sha256:0f2736aad64169282653d1d7733f29f5a8ddeb657cbd18e758250709d0a4b5a8"},
-]
+pangeo-forge-recipes = []
 partd = [
     {file = "partd-1.2.0-py3-none-any.whl", hash = "sha256:5c3a5d70da89485c27916328dc1e26232d0e270771bd4caef4a5124b6a457288"},
     {file = "partd-1.2.0.tar.gz", hash = "sha256:aa67897b84d522dcbc86a98b942afab8c6aa2f7f677d904a616b74ef5ddbc3eb"},
@@ -2583,8 +2587,8 @@ urllib3 = [
     {file = "urllib3-1.26.5.tar.gz", hash = "sha256:a7acd0977125325f516bda9735fa7142b909a8d01e8b2e4c8108d0984e6e0098"},
 ]
 websocket-client = [
-    {file = "websocket-client-1.0.1.tar.gz", hash = "sha256:3e2bf58191d4619b161389a95bdce84ce9e0b24eb8107e7e590db682c2d0ca81"},
-    {file = "websocket_client-1.0.1-py2.py3-none-any.whl", hash = "sha256:abf306dc6351dcef07f4d40453037e51cc5d9da2ef60d0fc5d0fe3bcda255372"},
+    {file = "websocket-client-1.1.0.tar.gz", hash = "sha256:b68e4959d704768fa20e35c9d508c8dc2bbc041fd8d267c0d7345cffe2824568"},
+    {file = "websocket_client-1.1.0-py2.py3-none-any.whl", hash = "sha256:e5c333bfa9fa739538b652b6f8c8fc2559f1d364243c8a689d7c0e1d41c2e611"},
 ]
 xarray = [
     {file = "xarray-0.18.2-py3-none-any.whl", hash = "sha256:a0b14b888b90a3ad8ecec5db9862f3fd02f8c0cc15066a3429d37da62fc37219"},

@@ -51,6 +51,7 @@ def register_recipe(recipe: BaseRecipe):
         root_path=f"abfs://{os.environ['FLOW_STORAGE_CONTAINER']}/azurerecipetest/",
     )
     recipe.target = target
+    recipe.lock_timeout = 60  # seconds
     recipe.input_cache = CacheFSSpecTarget(
         fs_remote,
         root_path=(
