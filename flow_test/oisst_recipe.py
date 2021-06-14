@@ -93,7 +93,11 @@ def register_recipe(recipe: BaseRecipe):
                 env={
                     "AZURE_STORAGE_CONNECTION_STRING": os.environ[
                         "FLOW_STORAGE_CONNECTION_STRING"
-                    ]
+                    ],
+                    # https://github.com/dask/distributed/issues/4091
+                    # https://stackoverflow.com/a/63680548
+                    "DASK_DISTRIBUTED__WORKER__PROFILE__INTERVAL": "1000ms",
+                    "DASK_DISTRIBUTED__WORKER__PROFILE__CYCLE": "1000ms",
                 },
             )
         },
