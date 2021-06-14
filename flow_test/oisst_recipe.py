@@ -56,7 +56,7 @@ def register_recipe(recipe: BaseRecipe):
     )
     flow.run_config = KubernetesRun(
         image=os.environ["AZURE_BAKERY_IMAGE"],
-        cpu_request=1, memory_request="7Gi",
+        cpu_request=1, memory_request="6Gi",
         env={
             "AZURE_STORAGE_CONNECTION_STRING": os.environ[
                 "FLOW_STORAGE_CONNECTION_STRING"
@@ -71,7 +71,7 @@ def register_recipe(recipe: BaseRecipe):
             "pod_template": make_pod_spec(
                 image=os.environ["AZURE_BAKERY_IMAGE"],
                 labels={"flow": flow_name},
-                memory_request="7G",
+                memory_request="6G",
                 cpu_request="1",
                 env={
                     "AZURE_STORAGE_CONNECTION_STRING": os.environ[
