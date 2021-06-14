@@ -17,29 +17,14 @@ from rechunker.executors import PrefectPipelineExecutor
 from distributed import get_worker
 
 
-def set_log_level(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        level = logging.DEBUG
-
-        logger = logging.getLogger("pangeo_forge_recipes")
-        logger.setLevel(level)
-        handler = logging.StreamHandler()
-        handler.setLevel(level)
-        formatter = logging.Formatter("[%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(funcName)10s() - %(thread)d] %(message)s")
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
-
-        try:
-            worker = get_worker()
-            worker._setup_logging(logger)
-        except ValueError:
-            pass
-
-        result = func(*args, **kwargs)
-        return result
-
-    return wrapper
+level = logging.DEBUG
+logger = logging.getLogger("pangeo_forge_recipes")
+logger.setLevel(level)
+handler = logging.StreamHandler()
+handler.setLevel(level)
+formatter = logging.Formatter("[%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(funcName)10s() - %(thread)d] %(message)s")
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 
 def register_recipe(recipe: BaseRecipe):
@@ -103,9 +88,6 @@ def register_recipe(recipe: BaseRecipe):
         },
         adapt_kwargs={"maximum": 10},
     )
-
-    for flow_task in flow.tasks:
-        flow_task.run = set_log_level(flow_task.run)
 
     flow.name = flow_name
     project_name = os.environ["PREFECT_PROJECT"]
