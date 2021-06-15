@@ -1,4 +1,5 @@
 import json
+import time
 import logging
 import os
 from functools import wraps
@@ -15,6 +16,7 @@ from prefect.executors.dask import DaskExecutor
 from prefect.run_configs.kubernetes import KubernetesRun
 from rechunker.executors import PrefectPipelineExecutor
 from distributed import get_worker
+from pangeo_forge_recipes.recipes.base import closure
 
 
 level = logging.DEBUG
@@ -25,6 +27,13 @@ handler.setLevel(level)
 formatter = logging.Formatter("[%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(funcName)10s() - %(thread)d] %(message)s")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
+
+
+class XarrayToSleep(XarrayZarrRecipe):
+    @property  # type: ignore
+    @closure
+    def store_chunk(self, chunk_key) -> None:  # type: ignore
+        time.sleep(0.5)
 
 
 def register_recipe(recipe: BaseRecipe):
@@ -106,5 +115,5 @@ if __name__ == "__main__":
     ]
     pattern = pattern_from_file_sequence(input_urls, "time", nitems_per_file=1)
 
-    recipe = XarrayZarrRecipe(pattern, inputs_per_chunk=20)
+    recipe = XarrayToSleep(pattern, inputs_per_chunk=20)
     register_recipe(recipe)
