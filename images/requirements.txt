@@ -84,7 +84,8 @@ oauthlib==3.1.0
 pandas==1.2.4
 # pangeo-forge-recipes==0.3.3
 # git+https://github.com/pangeo-forge/pangeo-forge-recipes.git@002aa837bbb440f6fe09d1346ebb2957aee68cca
-git+https://github.com/TomAugspurger/pangeo-forge.git@debug/lockless
+# git+https://github.com/TomAugspurger/pangeo-forge.git@debug/lockless
+git+https://github.com/TomAugspurger/pangeo-forge.git@refactor
 partd==1.2.0
 pathspec==0.8.1
 pendulum==2.1.2

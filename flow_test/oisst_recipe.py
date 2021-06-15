@@ -32,6 +32,11 @@ logger.addHandler(handler)
 class XarrayToSleep(XarrayZarrRecipe):
     @property  # type: ignore
     @closure
+    def prepare_target(self) -> None:
+        pass
+ 
+    @property  # type: ignore
+    @closure
     def store_chunk(self, chunk_key) -> None:  # type: ignore
         time.sleep(0.5)
 
@@ -115,5 +120,6 @@ if __name__ == "__main__":
     ]
     pattern = pattern_from_file_sequence(input_urls, "time", nitems_per_file=1)
 
-    recipe = XarrayToSleep(pattern, inputs_per_chunk=20)
-    register_recipe(recipe)
+    # TODO: restore cache_inputs
+    recipe = XarrayToSleep(pattern, inputs_per_chunk=20, cache_inputs=False)
+    # register_recipe(recipe)
