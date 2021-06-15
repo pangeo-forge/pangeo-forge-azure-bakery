@@ -29,17 +29,6 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-class XarrayToSleep(XarrayZarrRecipe):
-    @property  # type: ignore
-    @closure
-    def prepare_target(self) -> None:
-        pass
- 
-    @property  # type: ignore
-    @closure
-    def store_chunk(self, chunk_key) -> None:  # type: ignore
-        time.sleep(0.5)
-
 
 def register_recipe(recipe: BaseRecipe):
     fs_remote = AzureBlobFileSystem(
@@ -121,5 +110,5 @@ if __name__ == "__main__":
     pattern = pattern_from_file_sequence(input_urls, "time", nitems_per_file=1)
 
     # TODO: restore cache_inputs
-    recipe = XarrayToSleep(pattern, inputs_per_chunk=20, cache_inputs=False)
+    recipe = XarrayZarrRecipe(pattern, inputs_per_chunk=20, cache_inputs=False)
     register_recipe(recipe)
