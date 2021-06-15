@@ -53,10 +53,10 @@ spec:
           value: 'False'
         image: ${AZURE_BAKERY_IMAGE}
         imagePullPolicy: Always
-        resources:
-          requests:
-            cpu: "1"
-            memory: "1Gi"
+        # resources:
+        #   requests:
+        #     cpu: "1"
+        #     memory: "1Gi"
         livenessProbe:
           failureThreshold: 2
           httpGet:

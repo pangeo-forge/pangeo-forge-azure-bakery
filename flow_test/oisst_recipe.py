@@ -122,4 +122,4 @@ if __name__ == "__main__":
 
     # TODO: restore cache_inputs
     recipe = XarrayToSleep(pattern, inputs_per_chunk=20, cache_inputs=False)
-    # register_recipe(recipe)
+    register_recipe(recipe)
