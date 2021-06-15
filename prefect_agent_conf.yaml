@@ -51,7 +51,7 @@ spec:
           value: http://:8080
         - name: DELETE_FINISHED_JOBS
           value: 'False'
-        image: ${AZURE_BAKERY_IMAGE}
+        image: ${BAKERY_IMAGE}
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 2

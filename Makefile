@@ -1,4 +1,4 @@
-.PHONY: install setup-remote-state destroy-remote-state init lint-init lint format plan apply destroy configure-kubectl setup-agent build-and-push-image retrieve-flow-storage-values deploy-bakery
+.PHONY: install setup-remote-state destroy-remote-state init lint-init lint format plan apply destroy configure-kubectl setup-agent retrieve-flow-storage-values deploy-bakery
 
 install:
 	poetry install
@@ -44,7 +44,4 @@ setup-agent:
 retrieve-flow-storage-values:
 	poetry run dotenv run bash ./scripts/retrieve_flow_storage_values.sh
 
-build-and-push-image:
-	poetry run dotenv run bash ./scripts/build_and_push_image.sh
-
-deploy-bakery: setup-remote-state apply build-and-push-image configure-kubectl setup-agent retrieve-flow-storage-values
+deploy-bakery: setup-remote-state apply configure-kubectl setup-agent retrieve-flow-storage-values

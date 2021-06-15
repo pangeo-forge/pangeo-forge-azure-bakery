@@ -56,12 +56,12 @@ def register_recipe(recipe: BaseRecipe):
         connection_string=os.environ["FLOW_STORAGE_CONNECTION_STRING"],
     )
     flow.run_config = KubernetesRun(
-        image=os.environ["AZURE_BAKERY_IMAGE"],
+        image=os.environ["BAKERY_IMAGE"],
         env={
             "AZURE_STORAGE_CONNECTION_STRING": os.environ[
                 "FLOW_STORAGE_CONNECTION_STRING"
             ],
-            "AZURE_BAKERY_IMAGE": os.environ["AZURE_BAKERY_IMAGE"],
+            "BAKERY_IMAGE": os.environ["BAKERY_IMAGE"],
         },
         labels=json.loads(os.environ["PREFECT__CLOUD__AGENT__LABELS"]),
     )
@@ -69,7 +69,7 @@ def register_recipe(recipe: BaseRecipe):
         cluster_class="dask_kubernetes.KubeCluster",
         cluster_kwargs={
             "pod_template": make_pod_spec(
-                image=os.environ["AZURE_BAKERY_IMAGE"],
+                image=os.environ["BAKERY_IMAGE"],
                 labels={"flow": flow_name},
                 memory_limit=None,
                 memory_request=None,

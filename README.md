@@ -204,6 +204,7 @@ TF_VAR_owner="<your-name>"
 TF_VAR_identifier="<a-unique-value-to-tie-to-your-deployment>"
 TF_VAR_region="<azure-region-name-to-deploy-to>"
 BAKERY_NAMESPACE="<the-name-for-your-prefect-agent-k8s-configs-namespace>"
+BAKERY_IMAGE="<pangeo-forge-bakery-images-image-you-wish-to-use>" # See [Deployment > Prerequisites > Bakery Image]
 PREFECT__CLOUD__AGENT__AUTH_TOKEN="<value-of-runner-token>" # See https://docs.prefect.io/orchestration/agents/overview.html#tokens - This is required for your Agent to communicate to Prefect Cloud
 PREFECT__CLOUD__AUTH_TOKEN="<value-of-tenant-token>" # See https://docs.prefect.io/orchestration/concepts/tokens.html#tenant - This is used to support flow registration
 PREFECT_PROJECT="<name-of-a-prefect-project>" # See https://docs.prefect.io/orchestration/concepts/projects.html#creating-a-project - This is where the bakery's test flows will be registered
@@ -212,7 +213,6 @@ PREFECT__CLOUD__AGENT__LABELS="<a-set-of-prefect-agent-labels>" # See https://do
 # AUTOMATICALLY INSERTED/UPDATED BY MAKE COMMANDS:
 
 TF_CLI_ARGS_init="<backend-config-values>" # See [Deployment - Prerequisites > Terraform Remote State infrastructure]
-AZURE_BAKERY_IMAGE="<acr-image-tag" # See [Deployment - Standard Deployments > Pushing the Prefect Agent/Worker image]
 FLOW_STORAGE_CONTAINER="<a-flow-storage-container-name>" # See [Deployment - Standard Deployments > Retrieving Flow Storage Container name and Storage Connection String]
 FLOW_STORAGE_CONNECTION_STRING="<a-storage-account-connection-string>" # See [Deployment - Standard Deployments > Retrieving Flow Storage Container name and Storage Connection String]
 ```
@@ -305,6 +305,16 @@ $ make setup-remote-state # Creates the infrastructure to host your Terraform R
 Found TF_CLI_ARGS_init set in `.env`, replaced with: TF_CLI_ARGS_init="-backend-config='resource_group_name=<identifier>-bakery-remote-state-resource-group' -backend-config='storage_account_name=remotestatestoreacc' -backend-config='container_name=<identifier>-bakery-remote-state-storage-container' -backend-config='access_key=<an-access-key>' -backend-config='key=<identifier>-bakery.state'"
 ```
 
+### Bakery Image
+
+To be able to register and run Recipes as Prefect Flows, your Bakery must be running one of the `pangeo-forge-bakery-images` images in both your Prefect Agent **and** your Flow & Dask tasks.
+
+You can find more information on the `pangeo-forge-bakery-images` [here](https://github.com/pangeo-forge/pangeo-forge-bakery-images). Once you've selected which tag you wish to support, you need to add an entry into `.env` under the name `BAKERY_IMAGE`. See below for an example:
+
+```bash
+BAKERY_IMAGE="pangeo/pangeo-forge-bakery-images:pangeonotebook-2021.05.15_prefect-0.14.19_pangeoforgerecipes-0.3.4"
+```
+
 ## Deploying
 
 A Standard Deployment of the Azure Bakery comprises of several steps, they are listed below; the links will take you to an explanation of each step.
@@ -338,17 +348,6 @@ To deploy the Azure infrastructure required to host your Bakery, you can run:
 
 ```bash
 $ make apply # Deploys the Bakery AKS Cluster and storage
-```
-
-### Pushing the Prefect Agent/Worker image
-
-To make use of `KubeCluster` from `dask_kubernetes`, we currently have to roll our own Docker image with Prefect `0.14.17` and Kubernetes `12.0.1`, this is because of an issue [here](https://github.com/PrefectHQ/prefect/pull/4452) which **has** been fixed, but is not released. To build and push the image to ACR, you can run:
-
-```bash
-$ make build-and-push-image # Builds and pushes the Agent/Worker image to ACR
-<various-docker-output>
-
-Didnt find AZURE_BAKERY_IMAGE set in `.env`, set to: AZURE_BAKERY_IMAGE="<identifier>bakeryimageregistry.azurecr.io/pangeo-forge-azure-bakery-image"
 ```
 
 ### Setting up the Prefect Agent
