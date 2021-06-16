@@ -2,7 +2,7 @@
 
 TAGS="Project=pangeo-forge-azure-bakery Client=Planetary-Computer Owner=$TF_VAR_owner Stack=$TF_VAR_identifier"
 RESOURCE_GROUP_NAME="$TF_VAR_identifier-bakery-remote-state-resource-group"
-STORAGE_ACCOUNT_NAME="remotestatestoreacc"
+STORAGE_ACCOUNT_NAME=$(echo $TF_VAR_identifier'remotestate' | cut -c 1-24)
 CONTAINER_NAME="$TF_VAR_identifier-bakery-remote-state-storage-container"
 
 # Remove terraform/.terraform if found: If not removed, terraform init will fail if you have made a new Remote State, so we'll clean it up beforehand just to make sure
