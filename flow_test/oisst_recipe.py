@@ -59,7 +59,7 @@ def register_recipe(recipe: BaseRecipe):
     )
     flow.run_config = KubernetesRun(
         image=os.environ["AZURE_BAKERY_IMAGE"],
-        cpu_request=1, memory_request="3Gi",
+        cpu_request=1, memory_request="4Gi",
         env={
             "AZURE_STORAGE_CONNECTION_STRING": os.environ[
                 "FLOW_STORAGE_CONNECTION_STRING"
