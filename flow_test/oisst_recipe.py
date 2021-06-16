@@ -48,9 +48,7 @@ def register_recipe(recipe: BaseRecipe):
     )
     recipe.metadata_cache = target
 
-    executor = PrefectPipelineExecutor()
-    pipeline = recipe.to_pipelines()
-    flow = executor.pipelines_to_plan(pipeline)
+    flow = recipe.to_prefect()
 
     flow_name = "test-noaa-flow"
     flow.storage = storage.Azure(
