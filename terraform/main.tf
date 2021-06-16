@@ -54,13 +54,6 @@ resource "azurerm_storage_container" "bakery_flow_storage_container" {
   container_access_type = "private"
 }
 
-resource "azurerm_container_registry" "bakery_image_registry" {
-  name                = "${replace(var.identifier, "-", "")}bakeryimageregistry"
-  resource_group_name = azurerm_resource_group.bakery_resource_group.name
-  location            = azurerm_resource_group.bakery_resource_group.location
-  sku                 = "Standard"
-}
-
 resource "azurerm_kubernetes_cluster" "bakery_cluster" {
   name                = "${var.identifier}-bakery-cluster"
   location            = azurerm_resource_group.bakery_resource_group.location
@@ -92,10 +85,4 @@ resource "azurerm_kubernetes_cluster" "bakery_cluster" {
   }
 
   tags = local.tags
-}
-
-resource "azurerm_role_assignment" "bakery_pull_from_acr" {
-  scope                = azurerm_container_registry.bakery_image_registry.id
-  role_definition_name = "AcrPull"
-  principal_id         = azurerm_kubernetes_cluster.bakery_cluster.kubelet_identity[0].object_id
 }
