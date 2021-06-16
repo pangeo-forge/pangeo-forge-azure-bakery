@@ -14,6 +14,7 @@ from prefect import storage
 from prefect.executors.dask import DaskExecutor
 from prefect.run_configs.kubernetes import KubernetesRun
 from rechunker.executors import PrefectPipelineExecutor
+import yaml
 
 
 def set_log_level(func):
@@ -50,12 +51,28 @@ def register_recipe(recipe: BaseRecipe):
     pipeline = recipe.to_pipelines()
     flow = executor.pipelines_to_plan(pipeline)
 
+    job_template = yaml.safe_load(
+        """
+        apiVersion: batch/v1
+        kind: Job
+        metadata:
+          annotations:
+            "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
+        spec:
+          template:
+            spec:
+              containers:
+                - name: flow
+        """
+    )
+
     flow_name = "test-noaa-flow"
     flow.storage = storage.Azure(
         container=os.environ["FLOW_STORAGE_CONTAINER"],
         connection_string=os.environ["FLOW_STORAGE_CONNECTION_STRING"],
     )
     flow.run_config = KubernetesRun(
+        job_template=job_template,
         image=os.environ["BAKERY_IMAGE"],
         env={
             "AZURE_STORAGE_CONNECTION_STRING": os.environ[
@@ -63,6 +80,10 @@ def register_recipe(recipe: BaseRecipe):
             ],
         },
         labels=json.loads(os.environ["PREFECT__CLOUD__AGENT__LABELS"]),
+        cpu_limit=None,
+        cpu_request=None,
+        memory_limit=None,
+        memory_request=None
     )
     flow.executor = DaskExecutor(
         cluster_class="dask_kubernetes.KubeCluster",
@@ -72,12 +93,27 @@ def register_recipe(recipe: BaseRecipe):
                 labels={"flow": flow_name},
                 memory_limit=None,
                 memory_request=None,
+                cpu_limit=None,
+                cpu_request=None,
                 env={
                     "AZURE_STORAGE_CONNECTION_STRING": os.environ[
                         "FLOW_STORAGE_CONNECTION_STRING"
                     ]
                 },
-            )
+            ),
+            "scheduler_pod_template": make_pod_spec(
+                image=os.environ["BAKERY_IMAGE"],
+                labels={"flow": flow_name},
+                memory_limit=None,
+                memory_request=None,
+                cpu_limit=None,
+                cpu_request=None,
+                env={
+                    "AZURE_STORAGE_CONNECTION_STRING": os.environ[
+                        "FLOW_STORAGE_CONNECTION_STRING"
+                    ]
+                },
+            ),
         },
         adapt_kwargs={"maximum": 10},
     )
