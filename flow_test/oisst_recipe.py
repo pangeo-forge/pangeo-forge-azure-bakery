@@ -61,7 +61,6 @@ def register_recipe(recipe: BaseRecipe):
             "AZURE_STORAGE_CONNECTION_STRING": os.environ[
                 "FLOW_STORAGE_CONNECTION_STRING"
             ],
-            "BAKERY_IMAGE": os.environ["BAKERY_IMAGE"],
         },
         labels=json.loads(os.environ["PREFECT__CLOUD__AGENT__LABELS"]),
     )
