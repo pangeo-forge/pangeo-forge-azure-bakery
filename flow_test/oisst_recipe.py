@@ -57,7 +57,7 @@ def register_recipe(recipe: BaseRecipe):
     )
     flow.run_config = KubernetesRun(
         image=os.environ["AZURE_BAKERY_IMAGE"],
-        cpu_request=1, memory_request="4Gi",
+        cpu_request="250m", memory_request="128Mi",
         env={
             "AZURE_STORAGE_CONNECTION_STRING": os.environ[
                 "FLOW_STORAGE_CONNECTION_STRING"
@@ -106,7 +106,5 @@ if __name__ == "__main__":
         for day in dates
     ]
     pattern = pattern_from_file_sequence(input_urls, "time", nitems_per_file=1)
-
-    # TODO: restore cache_inputs
-    recipe = XarrayZarrRecipe(pattern, inputs_per_chunk=20, cache_inputs=False)
+    recipe = XarrayZarrRecipe(pattern, inputs_per_chunk=20, cache_inputs=True)
     register_recipe(recipe)
