@@ -72,8 +72,8 @@ def register_recipe(recipe: BaseRecipe):
             "pod_template": make_pod_spec(
                 image=os.environ["AZURE_BAKERY_IMAGE"],
                 labels={"flow": flow_name},
-                memory_request="3.9Gi",
-                cpu_request=1,
+                memory_request="3.9e9",
+                cpu_request="1",
                 env={
                     "AZURE_STORAGE_CONNECTION_STRING": os.environ[
                         "FLOW_STORAGE_CONNECTION_STRING"
