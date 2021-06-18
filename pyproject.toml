@@ -10,7 +10,7 @@ prefect = {extras = ["azure", "kubernetes"], version = "0.14.19"}
 python-dotenv = "^0.17.0"
 zarr = "2.7.0"
 # pangeo-forge-recipes = "^0.3.3"
-pangeo-forge-recipes = { git = "https://github.com/TomAugspurger/pangeo-forge", rev = "d962583aa46c87d4d71954c1a7891c2e2fcaad49" }
+pangeo-forge-recipes = { git = "https://github.com/pangeo-forge/pangeo-forge-recipes", branch = "master" }
 pandas = "^1.2.4"
 adlfs = "^0.7.6"
 h5py = "^3.2.1"
