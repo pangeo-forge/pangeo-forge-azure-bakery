@@ -7,7 +7,8 @@ from functools import wraps
 import pandas as pd
 from adlfs import AzureBlobFileSystem
 from dask_kubernetes.objects import make_pod_spec
-from pangeo_forge_recipes.patterns import pattern_from_file_sequence
+# from pangeo_forge_recipes.patterns import pattern_from_file_sequence
+from pangeo_forge_recipes.patterns import FilePattern, ConcatDim
 from pangeo_forge_recipes.recipes import XarrayZarrRecipe
 from pangeo_forge_recipes.recipes.base import BaseRecipe
 from pangeo_forge_recipes.storage import CacheFSSpecTarget, FSSpecTarget
@@ -93,18 +94,18 @@ def register_recipe(recipe: BaseRecipe):
     flow.register(project_name=project_name)
 
 
-if __name__ == "__main__":
+def format_function(time):
+    base = pd.Timestamp("1981-09-01")
+    day = base + pd.Timedelta(days=time)
     input_url_pattern = (
         "https://www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation"
-        "/v2.1/access/avhrr/{yyyymm}/oisst-avhrr-v02r01.{yyyymmdd}.nc"
+        "/v2.1/access/avhrr/{day:%Y%m}/oisst-avhrr-v02r01.{day:%Y%m%d}.nc"
     )
+    return input_url_pattern.format(day=day)
+
+
+if __name__ == "__main__":
     dates = pd.date_range("1981-09-01", "2021-01-05", freq="D")
-    input_urls = [
-        input_url_pattern.format(
-            yyyymm=day.strftime("%Y%m"), yyyymmdd=day.strftime("%Y%m%d")
-        )
-        for day in dates
-    ]
-    pattern = pattern_from_file_sequence(input_urls, "time", nitems_per_file=1)
-    recipe = XarrayZarrRecipe(pattern, inputs_per_chunk=20, cache_inputs=True)
-    register_recipe(recipe)
+    pattern = FilePattern(format_function, ConcatDim("time", range(len(dates)), 1))
+    recipe = XarrayZarrRecipe(pattern, inputs_per_chunk=20, cache_inputs=False)
+    # register_recipe(recipe)
