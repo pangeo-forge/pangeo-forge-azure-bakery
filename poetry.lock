@@ -1153,7 +1153,7 @@ test = ["pytest (>=5.0.1)", "pytest-xdist", "hypothesis (>=3.58)"]
 
 [[package]]
 name = "pangeo-forge-recipes"
-version = "0.1.dev408+gee26324"
+version = "0.1.dev423+gd962583"
 description = "Pipeline tools for building and publishing analysis ready datasets."
 category = "main"
 optional = false
@@ -1175,8 +1175,8 @@ dev = ["pytest", "pytest-sugar", "pytest-cov", "pytest-lazy-fixture", "scipy", "
 [package.source]
 type = "git"
 url = "https://github.com/TomAugspurger/pangeo-forge"
-reference = "refactor"
-resolved_reference = "ee263242ac4566e4590674b681ac9d887b88db9b"
+reference = "d962583aa46c87d4d71954c1a7891c2e2fcaad49"
+resolved_reference = "d962583aa46c87d4d71954c1a7891c2e2fcaad49"
 
 [[package]]
 name = "partd"
@@ -1742,7 +1742,7 @@ heapdict = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "3.8.10"
-content-hash = "950d6c4835123b86f22709e62163122d6c8c3ae1bc5936810b91225577f15ba0"
+content-hash = "27e9becd3afc50a30b1465bd6c0934c6eba86813781e88188fa15a4ffaaa83a1"
 
 [metadata.files]
 adal = [

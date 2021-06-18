@@ -39,6 +39,9 @@ configure-kubectl:
 	az aks get-credentials --overwrite-existing --resource-group $$(terraform -chdir="terraform" output -raw bakery_resource_group_name) --name $$(terraform -chdir="terraform" output -raw bakery_cluster_name)
 
 setup-agent:
+	# TODO: need a target for this.
+	# TODO: namespace stuff
+	# poetry run dotenv run kubectl -n pangeo-forge create configmap job-template --from-file=job_template.yaml
 	poetry run dotenv run sh -c 'kubectl create namespace $$BAKERY_NAMESPACE --dry-run=client -o yaml | kubectl apply -f - && cat prefect_agent_conf.yaml | envsubst | kubectl apply -f -'
 
 retrieve-flow-storage-values:
