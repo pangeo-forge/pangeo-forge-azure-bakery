@@ -54,6 +54,12 @@ resource "azurerm_storage_container" "bakery_flow_storage_container" {
   container_access_type = "private"
 }
 
+resource "azurerm_storage_container" "bakery_flow_cache_container" {
+  name                  = "${var.identifier}-bakery-flow-cache-container"
+  storage_account_name  = azurerm_storage_account.bakery_flow_storage_account.name
+  container_access_type = "private"
+}
+
 resource "azurerm_kubernetes_cluster" "bakery_cluster" {
   name                = "${var.identifier}-bakery-cluster"
   location            = azurerm_resource_group.bakery_resource_group.location

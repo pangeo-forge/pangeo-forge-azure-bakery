@@ -36,13 +36,13 @@ def register_recipe(recipe: BaseRecipe):
     )
     target = FSSpecTarget(
         fs_remote,
-        root_path=f"abfs://{os.environ['FLOW_STORAGE_CONTAINER']}/azurerecipetest/",
+        root_path=f"abfs://{os.environ['FLOW_CACHE_CONTAINER']}/azurerecipetest/",
     )
     recipe.target = target
     recipe.input_cache = CacheFSSpecTarget(
         fs_remote,
         root_path=(
-            f"abfs://{os.environ['FLOW_STORAGE_CONTAINER']}/azurerecipetestcache/"
+            f"abfs://{os.environ['FLOW_CACHE_CONTAINER']}/azurerecipetestcache/"
         ),
     )
     recipe.metadata_cache = target
@@ -101,19 +101,19 @@ def register_recipe(recipe: BaseRecipe):
                     ]
                 },
             ),
-            "scheduler_pod_template": make_pod_spec(
-                image=os.environ["BAKERY_IMAGE"],
-                labels={"flow": flow_name},
-                memory_limit=None,
-                memory_request=None,
-                cpu_limit=None,
-                cpu_request=None,
-                env={
-                    "AZURE_STORAGE_CONNECTION_STRING": os.environ[
-                        "FLOW_STORAGE_CONNECTION_STRING"
-                    ]
-                },
-            ),
+            # "scheduler_pod_template": make_pod_spec(
+            #     image=os.environ["BAKERY_IMAGE"],
+            #     labels={"flow": flow_name},
+            #     # memory_limit=None,
+            #     # memory_request=None,
+            #     # cpu_limit=None,
+            #     # cpu_request=None,
+            #     env={
+            #         "AZURE_STORAGE_CONNECTION_STRING": os.environ[
+            #             "FLOW_STORAGE_CONNECTION_STRING"
+            #         ]
+            #     },
+            # ),
         },
         adapt_kwargs={"maximum": 10},
     )
