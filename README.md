@@ -213,7 +213,8 @@ PREFECT__CLOUD__AGENT__LABELS="<a-set-of-prefect-agent-labels>" # See https://do
 # AUTOMATICALLY INSERTED/UPDATED BY MAKE COMMANDS:
 
 TF_CLI_ARGS_init="<backend-config-values>" # See [Deployment - Prerequisites > Terraform Remote State infrastructure]
-FLOW_STORAGE_CONTAINER="<a-flow-storage-container-name>" # See [Deployment - Standard Deployments > Retrieving Flow Storage Container name and Storage Connection String]
+FLOW_STORAGE_CONTAINER="<a-flow-storage-container-name>" # See [Deployment - Standard Deployments > Retrieving Flow Storage Container names and Storage Connection String]
+FLOW_CACHE_CONTAINER="<a-flow-storage-container-name>" # See [Deployment - Standard Deployments > Retrieving Flow Storage Container names and Storage Connection String]
 FLOW_STORAGE_CONNECTION_STRING="<a-storage-account-connection-string>" # See [Deployment - Standard Deployments > Retrieving Flow Storage Container name and Storage Connection String]
 ```
 
@@ -273,7 +274,7 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 
 **`make retrieve-flow-storage-values`**
 
-> This will use Terraform and Azure CLI to populate `.env` with the values of `FLOW_STORAGE_CONTAINER` and `FLOW_STORAGE_CONNECTION_STRING` so that you can register Flows. You **must** have deployed the cluster first
+> This will use Terraform and Azure CLI to populate `.env` with the values of `FLOW_STORAGE_CONTAINER`, `FLOW_CACHE_CONTAINER`, and `FLOW_STORAGE_CONNECTION_STRING` so that you can register Flows. You **must** have deployed the cluster first
 
 **`make build-and-push-image`**
 
@@ -282,6 +283,10 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 **`make deploy-bakery`**
 
 > This encapsulates all the infrastructure and `.env` setup steps needed to deploy the Azure Bakery. This command is the same as running: `make setup-remote-state apply build-and-push-image configure-kubectl setup-agent retrieve-flow-storage-values`.
+
+**`make register-flow`**
+
+> This uses the bakery image defined in `BAKERY_IMAGE` to register your Flow with Prefect. It takes a parameter `flow` which is the Python file within `flow_test/` you'd like to use. You would use it like: `$ make register-flow flow=oisst_recipe.py`
 
 # Deployment
 
@@ -332,7 +337,7 @@ $ make deploy-bakery # Deploys all the Azure Bakery infrastructure and prepares 
 2. [Deploying AKS via Terraform](#deploying-aks-via-terraform)
 3. [Pushing the Prefect Agent/Worker image](#pushing-the-prefect-agent/worker-image)
 4. [Setting up the Prefect Agent](#setting-up-the-prefect-agent)
-5. [Retrieving Flow Storage Container name and Storage Connection String](#retrieving-flow-storage-container-name-and-storage-connection-string)
+5. [Retrieving Flow Storage Container names and Storage Connection String](#retrieving-flow-storage-container-names-and-storage-connection-string)
 
 ### Confirm what's being deployed via Terraform
 
@@ -359,13 +364,14 @@ $ make configure-kubectl # Uses the output from Terraform to configure kubectl t
 $ make setup-agent # This will create a namespace on the AKS cluster with the name of `BAKERY_NAMESPACE`, then the agent configuration in `prefect_agent_conf.yaml` will be applied to the cluster, registering itself as an Agent for the Prefect Project defined in `PREFECT_PROJECT`, using `PREFECT__CLOUD__AGENT__AUTH_TOKEN` to authenticate
 ```
 
-### Retrieving Flow Storage Container name and Storage Connection String
+### Retrieving Flow Storage Container names and Storage Connection String
 
-To successfully register and store your flow, you will need to retrieve the Container name and Connection string, you can run the following to populate the values of `FLOW_STORAGE_CONTAINER` and `FLOW_STORAGE_CONNECTION_STRING`:
+To successfully register and store your flow, you will need to retrieve the Container name and Connection string, you can run the following to populate the values of `FLOW_STORAGE_CONTAINER`, `FLOW_CACHE_CONTAINER`, and `FLOW_STORAGE_CONNECTION_STRING`:
 
 ```bash
 $ make retrieve-flow-storage-values
 Didnt find FLOW_STORAGE_CONTAINER set in `.env`, set to: FLOW_STORAGE_CONTAINER="<identifier>-bakery-flow-storage-container"
+Didnt find FLOW_CACHE_CONTAINER set in `.env`, set to: FLOW_CACHE_CONTAINER="<identifier>-bakery-flow-cache-container"
 Didnt find FLOW_STORAGE_CONNECTION_STRING set in `.env`, set to: FLOW_STORAGE_CONNECTION_STRING="<connection-string>"
 ```
 
@@ -402,13 +408,13 @@ $ make destroy-remote-state # Uses Azure CLI to destroy the Remote State infrast
 
 ## Registering the test Recipe
 
-For quick testing of your Bakery deployment, there a Recipe setup as a Flow within `flow_test/` that you can register and run. Before you register the example Flow, you must have the values of `PREFECT__CLOUD__AUTH_TOKEN`, `PREFECT_PROJECT`, `PREFECT__CLOUD__AGENT__LABELS`, `FLOW_STORAGE_CONTAINER`, and `FLOW_STORAGE_CONNECTION_STRING` present and populated in `.env`. You must also have run [`make install`](#makefile-goodness).
+For quick testing of your Bakery deployment, there's a Recipe setup as a Flow within `flow_test/` that you can register and run. Before you register the example Flow, you must have the values of `PREFECT__CLOUD__AUTH_TOKEN`, `PREFECT_PROJECT`, `PREFECT__CLOUD__AGENT__LABELS`, `FLOW_STORAGE_CONTAINER`, `FLOW_CACHE_CONTAINER`, `FLOW_STORAGE_CONNECTION_STRING`, and `BAKERY_IMAGE` present and populated in `.env`. You must also have run [`make install`](#makefile-goodness).
 
 When your `.env` is populated and you've installed the project dependencies, you can register the Flow by running:
 
 ```
-$ poetry run dotenv run python3 flow_test/oisst_recipe.py
-
+$ make register-flow flow=<name-of-flow-file-in-flow_test/>.py
+...
 [2021-04-29 13:28:22+0100] INFO - prefect.Azure | Uploading test-noaa-flow/2021-06-03t10-07-21-944813-00-00 to <identifier>-bakery-flow-storage-container
 Flow URL: https://cloud.prefect.io/<your-account>/flow/aef82344-8a31-485b-a189-bc1398755f9e
  └── ID: ca02500f-97ea-4605-9f66-1cccb457a3c0
