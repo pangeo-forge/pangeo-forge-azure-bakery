@@ -1,50 +1,67 @@
-.PHONY: install setup-remote-state destroy-remote-state init lint-init lint format plan apply destroy configure-kubectl setup-agent build-and-push-image retrieve-flow-storage-values deploy-bakery
-
+.PHONY: install
 install:
 	poetry install
 
+.PHONY: setup-remote-state
 setup-remote-state:
 	poetry run dotenv run bash ./scripts/setup_remote_state.sh
 
+.PHONY: destroy-remote-state
 destroy-remote-state:
 	poetry run dotenv run sh -c 'az group delete --resource-group $$TF_VAR_identifier-bakery-remote-state-resource-group --yes'
 
+.PHONY: init
 init:
 	poetry run dotenv run terraform -chdir="terraform/" init
 
+.PHONY: lint-init
 lint-init:
 	terraform -chdir="terraform/" init -backend=false
 
+.PHONY: lint
 lint: lint-init
 	terraform -chdir="terraform/" validate
 	poetry run flake8 flow_test/ scripts/
 	poetry run isort --check-only --profile black flow_test/ scripts/
 	poetry run black --check --diff flow_test/ scripts/
 
+.PHONY: format
 format:
 	terraform -chdir="terraform/" fmt
 	poetry run isort --profile black flow_test/ scripts/
 	poetry run black flow_test/ scripts/
 
+.PHONY: plan
 plan: init
 	poetry run dotenv run terraform -chdir="terraform/" plan
 
+.PHONY: apply
 apply: init
 	poetry run dotenv run terraform -chdir="terraform/" apply -auto-approve
 
+.PHONY: destroy
 destroy: init
 	poetry run dotenv run terraform -chdir="terraform/" destroy -auto-approve
 
+.PHONY: configure-kubectl
 configure-kubectl:
 	az aks get-credentials --overwrite-existing --resource-group $$(terraform -chdir="terraform" output -raw bakery_resource_group_name) --name $$(terraform -chdir="terraform" output -raw bakery_cluster_name)
 
+.PHONY: setup-agent
 setup-agent:
 	poetry run dotenv run sh -c 'kubectl create namespace $$BAKERY_NAMESPACE --dry-run=client -o yaml | kubectl apply -f - && cat prefect_agent_conf.yaml | envsubst | kubectl apply -f -'
 
+.PHONY: retrieve-flow-storage-values
 retrieve-flow-storage-values:
 	poetry run dotenv run bash ./scripts/retrieve_flow_storage_values.sh
 
-build-and-push-image:
-	poetry run dotenv run bash ./scripts/build_and_push_image.sh
+.PHONY: deploy-bakery
+deploy-bakery: setup-remote-state apply configure-kubectl setup-agent retrieve-flow-storage-values
 
-deploy-bakery: setup-remote-state apply build-and-push-image configure-kubectl setup-agent retrieve-flow-storage-values
+.PHONY: register-flow
+register-flow:
+	poetry run dotenv run sh -c 'docker run -it --rm \
+	-v $$(pwd)/flow_test/$(flow):/$(flow) \
+	-e FLOW_STORAGE_CONNECTION_STRING -e FLOW_STORAGE_CONTAINER -e FLOW_CACHE_CONTAINER -e BAKERY_IMAGE \
+    -e PREFECT__CLOUD__AGENT__LABELS -e PREFECT_PROJECT -e PREFECT__CLOUD__AUTH_TOKEN \
+    $$BAKERY_IMAGE python3 /$(flow)'

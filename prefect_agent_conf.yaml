@@ -17,11 +17,14 @@ spec:
         app: prefect-agent
     spec:
       containers:
-      - args:
-        - prefect agent kubernetes start
-        command:
-        - /bin/bash
-        - -c
+      - args: ["prefect", "agent", "kubernetes", "start"]
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "200m"
         env:
         - name: PREFECT__CLOUD__AGENT__AUTH_TOKEN
           value: ${PREFECT__CLOUD__AGENT__AUTH_TOKEN}
@@ -29,20 +32,8 @@ spec:
           value: https://api.prefect.io
         - name: NAMESPACE
           value: ${BAKERY_NAMESPACE}
-        - name: IMAGE_PULL_SECRETS
-          value: ''
         - name: PREFECT__CLOUD__AGENT__LABELS
           value: '${PREFECT__CLOUD__AGENT__LABELS}'
-        - name: JOB_MEM_REQUEST
-          value: ''
-        - name: JOB_MEM_LIMIT
-          value: ''
-        - name: JOB_CPU_REQUEST
-          value: ''
-        - name: JOB_CPU_LIMIT
-          value: ''
-        - name: IMAGE_PULL_POLICY
-          value: ''
         - name: SERVICE_ACCOUNT_NAME
           value: 'default'
         - name: PREFECT__BACKEND
@@ -51,7 +42,7 @@ spec:
           value: http://:8080
         - name: DELETE_FINISHED_JOBS
           value: 'False'
-        image: ${AZURE_BAKERY_IMAGE}
+        image: ${BAKERY_IMAGE}
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 2

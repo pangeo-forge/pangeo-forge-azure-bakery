@@ -4,6 +4,7 @@ import os
 from functools import wraps
 
 import pandas as pd
+import yaml
 from adlfs import AzureBlobFileSystem
 from dask_kubernetes.objects import make_pod_spec
 from pangeo_forge_recipes.patterns import pattern_from_file_sequence
@@ -35,13 +36,13 @@ def register_recipe(recipe: BaseRecipe):
     )
     target = FSSpecTarget(
         fs_remote,
-        root_path=f"abfs://{os.environ['FLOW_STORAGE_CONTAINER']}/azurerecipetest/",
+        root_path=f"abfs://{os.environ['FLOW_CACHE_CONTAINER']}/azurerecipetest/",
     )
     recipe.target = target
     recipe.input_cache = CacheFSSpecTarget(
         fs_remote,
         root_path=(
-            f"abfs://{os.environ['FLOW_STORAGE_CONTAINER']}/azurerecipetestcache/"
+            f"abfs://{os.environ['FLOW_CACHE_CONTAINER']}/azurerecipetestcache/"
         ),
     )
     recipe.metadata_cache = target
@@ -50,35 +51,54 @@ def register_recipe(recipe: BaseRecipe):
     pipeline = recipe.to_pipelines()
     flow = executor.pipelines_to_plan(pipeline)
 
+    job_template = yaml.safe_load(
+        """
+        apiVersion: batch/v1
+        kind: Job
+        metadata:
+          annotations:
+            "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
+        spec:
+          template:
+            spec:
+              containers:
+                - name: flow
+        """
+    )
+
     flow_name = "test-noaa-flow"
     flow.storage = storage.Azure(
         container=os.environ["FLOW_STORAGE_CONTAINER"],
         connection_string=os.environ["FLOW_STORAGE_CONNECTION_STRING"],
     )
     flow.run_config = KubernetesRun(
-        image=os.environ["AZURE_BAKERY_IMAGE"],
+        job_template=job_template,
+        image=os.environ["BAKERY_IMAGE"],
         env={
             "AZURE_STORAGE_CONNECTION_STRING": os.environ[
                 "FLOW_STORAGE_CONNECTION_STRING"
             ],
-            "AZURE_BAKERY_IMAGE": os.environ["AZURE_BAKERY_IMAGE"],
         },
         labels=json.loads(os.environ["PREFECT__CLOUD__AGENT__LABELS"]),
+        cpu_request="1000m",
+        memory_request="3Gi",
     )
     flow.executor = DaskExecutor(
         cluster_class="dask_kubernetes.KubeCluster",
         cluster_kwargs={
             "pod_template": make_pod_spec(
-                image=os.environ["AZURE_BAKERY_IMAGE"],
+                image=os.environ["BAKERY_IMAGE"],
                 labels={"flow": flow_name},
-                memory_limit=None,
-                memory_request=None,
+                memory_limit="1Gi",
+                memory_request="500Mi",
+                cpu_limit="512m",
+                cpu_request="256m",
                 env={
                     "AZURE_STORAGE_CONNECTION_STRING": os.environ[
                         "FLOW_STORAGE_CONNECTION_STRING"
                     ]
                 },
-            )
+            ),
         },
         adapt_kwargs={"maximum": 10},
     )
