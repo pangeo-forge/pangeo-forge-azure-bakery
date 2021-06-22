@@ -201,7 +201,7 @@ ARM_CLIENT_ID="<your-service-principals-app-id>" # See [Development > Getting St
 ARM_CLIENT_SECRET="<your-service-principals-password>" # See [Development > Getting Started > Azure Credential setup > Creating a Service Principal]
 
 TF_VAR_owner="<your-name>"
-TF_VAR_identifier="<a-unique-value-to-tie-to-your-deployment>"
+TF_VAR_identifier="<a-unique-value-to-tie-to-your-deployment>" # Try to keep this short (Less than 10 chars and only a-z A-Z 0-9 symbols)
 TF_VAR_region="<azure-region-name-to-deploy-to>"
 BAKERY_NAMESPACE="<the-name-for-your-prefect-agent-k8s-configs-namespace>"
 BAKERY_IMAGE="<pangeo-forge-bakery-images-image-you-wish-to-use>" # See [Deployment > Prerequisites > Bakery Image]
