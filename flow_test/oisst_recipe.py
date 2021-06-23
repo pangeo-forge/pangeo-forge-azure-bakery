@@ -2,6 +2,7 @@ import json
 import logging
 import os
 from functools import wraps
+import time
 
 import pandas as pd
 from adlfs import AzureBlobFileSystem
@@ -30,6 +31,12 @@ logger.addHandler(handler)
 
 
 
+class SleepingInputCache(CacheFSSpecTarget):
+    def cache_file(self, fname, **fsspec_open_kwargs):
+        time.sleep(1)
+        return
+
+
 def register_recipe(recipe: BaseRecipe):
     fs_remote = AzureBlobFileSystem(
         connection_string=os.environ["FLOW_STORAGE_CONNECTION_STRING"]
@@ -40,7 +47,7 @@ def register_recipe(recipe: BaseRecipe):
     )
     recipe.target = target
     recipe.lock_timeout = 60  # seconds
-    recipe.input_cache = CacheFSSpecTarget(
+    recipe.input_cache = SleepingInputCache(
         fs_remote,
         root_path=(
             f"abfs://{os.environ['FLOW_STORAGE_CONTAINER']}/azurerecipetestcache/"
