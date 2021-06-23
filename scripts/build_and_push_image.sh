@@ -6,10 +6,13 @@ LOCAL_TAG=pangeo-forge-azure-bakery-image
 REMOTE_TAG=$REGISTRY_NAME.azurecr.io/$LOCAL_TAG:latest
 
 az acr login --name $REGISTRY_NAME
-az acr build --registry $REGISTRY_NAME --image $LOCAL_TAG:latest ./images/
+docker build -t $LOCAL_TAG -f ./images/Dockerfile ./images
+docker tag $LOCAL_TAG $REMOTE_TAG
 
-# docker build -t $LOCAL_TAG -f ./images/Dockerfile ./images/
-# docker tag $LOCAL_TAG $REMOTE_TAG
-# docker push $REMOTE_TAG
+# az acr build --registry $REGISTRY_NAME --image $LOCAL_TAG:latest ./images/
 
-python3 ./scripts/replace_or_insert_value.py $REMOTE_TAG AZURE_BAKERY_IMAGE
+# # docker build -t $LOCAL_TAG -f ./images/Dockerfile ./images/
+# # docker tag $LOCAL_TAG $REMOTE_TAG
+# # docker push $REMOTE_TAG
+
+# python3 ./scripts/replace_or_insert_value.py $REMOTE_TAG AZURE_BAKERY_IMAGE
