@@ -84,8 +84,8 @@ oauthlib==3.1.0
 pandas==1.2.4
 # pangeo-forge-recipes master on 2021-06-23
 # git+https://github.com/pangeo-forge/pangeo-forge-recipes.git@562e76ccb77831540d5424e948a6fe4ec440263a
-git+https://github.com/rabernat/pangeo-forge.git@new-dask-exectuor
-# git+https://github.com/TomAugspurger/pangeo-forge.git@d962583aa46c87d4d71954c1a7891c2e2fcaad49
+# git+https://github.com/rabernat/pangeo-forge.git@new-dask-exectuor
+git+https://github.com/TomAugspurger/pangeo-forge.git@d962583aa46c87d4d71954c1a7891c2e2fcaad49
 partd==1.2.0
 pathspec==0.8.1
 pendulum==2.1.2
