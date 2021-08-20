@@ -14,7 +14,15 @@ PANGEO_FORGE_VERSION=$(echo $BAKERY_IMAGE | sed -rn "s/.*pangeoforgerecipes-(.*)
 PREFECT_VERSION=$(echo $BAKERY_IMAGE | sed -rn "s/.*prefect-(.*)_pangeoforgerecipes.*/\1/p")
 PANGEO_NOTEBOOK_VERSION=$(echo $BAKERY_IMAGE | sed -rn "s/.*pangeonotebook-(.*)_prefect.*/\1/p")
 WORKER_IMAGE=$BAKERY_IMAGE
-cat > input.json << EOF
+
+function cleanup {
+  echo "Removing temporary JSON file"
+  rm -f /tmp/input.json
+}
+
+trap cleanup EXIT
+
+cat > /tmp/input.json << EOF
 {
   "devseed.bakery.development.$PLATFORM.$REGION":{
     "region":"$PLATFORM.$REGION",
@@ -46,4 +54,4 @@ cat > input.json << EOF
   }
 }
 EOF
-python3 -c 'import sys, yaml, json; yaml.safe_dump(json.load(sys.stdin), sys.stdout, default_flow_style=False, sort_keys=False)' < input.json > bakery.yaml
+python3 -c 'import sys, yaml, json; yaml.safe_dump(json.load(sys.stdin), sys.stdout, default_flow_style=False, sort_keys=False)' < /tmp/input.json > bakery.yaml
