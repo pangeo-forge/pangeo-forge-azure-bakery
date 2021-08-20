@@ -201,4 +201,6 @@ Thumbs.db
 !.vscode/extensions.json
 *.code-workspace
 
+.idea/**
+
 # End of https://www.toptal.com/developers/gitignore/api/vscode
