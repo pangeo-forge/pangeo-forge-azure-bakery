@@ -19,6 +19,7 @@ This repository serves as the provider of an Terraform Application which deploys
 
 To develop on this project, you should have the following installed:
 
+* JQ
 * [Python 3.8.*](https://www.python.org/downloads/) (We recommend using [Pyenv](https://github.com/pyenv/pyenv) to handle Python versions)
 * [Poetry](https://github.com/python-poetry/poetry)
 * [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)

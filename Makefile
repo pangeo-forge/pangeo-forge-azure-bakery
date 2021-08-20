@@ -61,7 +61,11 @@ deploy-bakery: setup-remote-state apply configure-kubectl setup-agent retrieve-f
 .PHONY: register-flow
 register-flow:
 	poetry run dotenv run sh -c 'docker run -it --rm \
-	-v $$(pwd)/flow_test/$(flow):/$(flow) \
+	-v $$(pwd)/test/recipes/$(flow):/$(flow) \
 	-e FLOW_STORAGE_CONNECTION_STRING -e FLOW_STORAGE_CONTAINER -e FLOW_CACHE_CONTAINER -e BAKERY_IMAGE \
     -e PREFECT__CLOUD__AGENT__LABELS -e PREFECT_PROJECT -e PREFECT__CLOUD__AUTH_TOKEN \
     $$BAKERY_IMAGE python3 /$(flow)'
+
+.PHONY: generate-bakery-yaml
+generate-bakery-yaml:
+	poetry run dotenv run bash ./scripts/generate-yaml.sh
