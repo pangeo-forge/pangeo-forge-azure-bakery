@@ -21,7 +21,7 @@ lint-init:
 .PHONY: lint
 lint: lint-init
 	terraform -chdir="terraform/" validate
-	poetry run flake8 flow_test/ scripts/
+	poetry run flake8 test/recipes/ scripts/
 	poetry run isort --check-only --profile black test/recipes/ scripts/
 	poetry run black --check --diff test/recipes/ scripts/
 
