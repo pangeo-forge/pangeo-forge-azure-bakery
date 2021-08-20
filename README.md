@@ -231,6 +231,10 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 
 > This uses the bakery image defined in `BAKERY_IMAGE` to register your Flow with Prefect. It takes a parameter `flow` which is the Python file within `flow_test/` you'd like to use. You would use it like: `$ make register-flow flow=oisst_recipe.py`
 
+**`make generate-bakery-yaml`**
+
+> This generates a bakery definition YAML file
+
 # Deployment
 
 ## Prerequisites
@@ -366,6 +370,10 @@ Flow URL: https://cloud.prefect.io/<your-account>/flow/aef82344-8a31-485b-a189-b
 ```
 
 You can then navigate to [cloud.prefect.io](https://cloud.prefect.io/), find your Flow, and run it.
+
+# Generating Bakery YAML files
+- To generate a bakery YAML file, run `make generatebakeryyaml`.
+- The resulting YAML can be added to the bakery definition repo here https://github.com/pangeo-forge/bakery-database/blob/main/bakeries.yaml
 
 ## Logging
 
