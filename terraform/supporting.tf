@@ -1,12 +1,3 @@
-locals {
-  tags = {
-    "Project" : "pangeo-forge-azure-bakery",
-    "Client" : "Planetary-Computer",
-    "Owner" : var.owner,
-    "Stack" : var.identifier
-  }
-}
-
 resource "azurerm_resource_group" "bakery_resource_group" {
   name     = "${var.identifier}-bakery-resource-group"
   location = var.region
