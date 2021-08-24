@@ -77,3 +77,4 @@ loki:
 .PHONY: generate-bakery-yaml
 generate-bakery-yaml:
 	poetry run dotenv run bash ./scripts/generate-yaml.sh
+
