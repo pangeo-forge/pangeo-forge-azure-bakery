@@ -25,6 +25,7 @@ To develop on this project, you should have the following installed:
 * [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 * [Terraform 0.15.1](https://www.terraform.io/downloads.html)
 * [Docker](https://docs.docker.com/get-docker/)
+* [Helm](https://helm.sh/docs/intro/install/)
 
 If you're developing on MacOS, all of the above can be installed using [homebrew](https://brew.sh/)
 
