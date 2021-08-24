@@ -7,7 +7,7 @@ function cleanupK8s {
 
 ROOT=$(pwd)
 echo "------------------------------------------"
-echo "       Pangeo Forge - GCE bakery"
+echo "       Pangeo Forge - Azure bakery"
 echo "   ----  FLOW RUN INFO FINDER ----"
 echo "------------------------------------------"
 echo "- Running prepare script"
