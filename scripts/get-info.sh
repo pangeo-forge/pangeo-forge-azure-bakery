@@ -10,8 +10,8 @@ echo "------------------------------------------"
 echo "       Pangeo Forge - Azure bakery"
 echo "   ----  FLOW RUN INFO FINDER ----"
 echo "------------------------------------------"
-echo "- Running prepare script"
-source "$ROOT/scripts/prepare.sh" "$ROOT"
+#echo "- Running prepare script"
+#source "$ROOT/scripts/prepare.sh" "$ROOT"
 
 echo "- Running kubernetes connector script"
 $ROOT/scripts/k8s-connect.sh
