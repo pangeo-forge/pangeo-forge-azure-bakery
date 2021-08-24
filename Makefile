@@ -65,3 +65,7 @@ register-flow:
 	-e FLOW_STORAGE_CONNECTION_STRING -e FLOW_STORAGE_CONTAINER -e FLOW_CACHE_CONTAINER -e BAKERY_IMAGE \
     -e PREFECT__CLOUD__AGENT__LABELS -e PREFECT_PROJECT -e PREFECT__CLOUD__AUTH_TOKEN \
     $$BAKERY_IMAGE python3 /$(flow)'
+
+.PHONE: loki
+loki:
+	poetry run dotenv run bash ./scripts/loki.sh $$(pwd)
