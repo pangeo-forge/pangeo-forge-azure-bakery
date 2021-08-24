@@ -66,6 +66,10 @@ register-flow:
     -e PREFECT__CLOUD__AGENT__LABELS -e PREFECT_PROJECT -e PREFECT__CLOUD__AUTH_TOKEN \
     $$BAKERY_IMAGE python3 /$(flow)'
 
+.PHONE: loki
+loki:
+	poetry run dotenv run bash ./scripts/loki.sh $$(pwd)
+
 .PHONY: generate-bakery-yaml
 generate-bakery-yaml:
 	poetry run dotenv run bash ./scripts/generate-yaml.sh
