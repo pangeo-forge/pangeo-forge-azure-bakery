@@ -43,8 +43,6 @@ echo "Dask clusters spun up from job $JOB_ID for flow run $ID"
 echo "---------------------------------------------------------------------------------"
 LOGS=$(kubectl logs -n "$BAKERY_NAMESPACE" jobs/$JOB_ID)
 DASK_CLUSTER=$(echo $LOGS | sed -rn "s/.* The Dask dashboard is available at http:\/\/(.*)."$BAKERY_NAMESPACE".*/\1/p")
-PORT=$(echo $LOGS | sed -rn "s/.* The Dask dashboard is available at http:\/\/.*."$BAKERY_NAMESPACE"\:([0-9]+).*/\1/p")
-echo PORT IS $PORT
 if [ -z $DASK_CLUSTER ]; then
   echo "No dask clusters have been made by this flow yet"
   exit 2
