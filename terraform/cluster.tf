@@ -21,12 +21,5 @@ resource "azurerm_kubernetes_cluster" "bakery_cluster" {
     enabled = true
   }
 
-  addon_profile {
-    oms_agent {
-      enabled                    = true
-      log_analytics_workspace_id = azurerm_log_analytics_workspace.bakery_logs_workspace.id
-    }
-  }
-
   tags = local.tags
 }
