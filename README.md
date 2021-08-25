@@ -127,7 +127,7 @@ You can then use that `objectId` to run:
 ```bash
 $ az role assignment create --assignee "<objectId>" --role "Storage Blob Data Contributor"
 $ az role assignment create --assignee "<objectId>" --role "User Access Administrator"
-$ az role assignment create --assignee "<objectId>" --role  "Azure Kubernetes Service Cluster User Role"
+$ az role assignment create --assignee "<objectId>" --role "Azure Kubernetes Service Cluster User Role"
 ```
 
 You should now be setup with the correct permissions to deploy the infrastructure onto Azure. Further reading on Azure Service Principals can be found [here](https://docs.microsoft.com/en-us/cli/azure/ad/sp?view=azure-cli-latest).

@@ -1,5 +1,11 @@
-variable "owner" {}
+variable "owner" {
+  type = string
+}
 
-variable "identifier" {}
+variable "identifier" {
+  type = string
+}
 
-variable "region" {}
+variable "region" {
+  type = string
+}

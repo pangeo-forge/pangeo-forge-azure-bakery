@@ -8,7 +8,7 @@ resource "azurerm_kubernetes_cluster" "bakery_cluster" {
     name                = "default"
     max_count           = 100
     min_count           = 1
-    vm_size             = "Standard_D2_v2"
+    vm_size             = "standard_d4_v4"
     os_disk_size_gb     = 30
     enable_auto_scaling = true
   }
@@ -19,13 +19,6 @@ resource "azurerm_kubernetes_cluster" "bakery_cluster" {
 
   role_based_access_control {
     enabled = true
-  }
-
-  addon_profile {
-    oms_agent {
-      enabled                    = true
-      log_analytics_workspace_id = azurerm_log_analytics_workspace.bakery_logs_workspace.id
-    }
   }
 
   tags = local.tags
