@@ -49,7 +49,7 @@ configure-kubectl:
 
 .PHONY: setup-agent
 setup-agent:
-	poetry run dotenv run sh -c 'kubectl create namespace $$BAKERY_NAMESPACE --dry-run=client -o yaml | kubectl apply -f - && cat prefect_agent_conf.yaml | envsubst | kubectl apply -f -'
+	poetry run dotenv run sh -c 'kubectl create namespace $$BAKERY_NAMESPACE --dry-run=client -o yaml | kubectl apply -f - && cat kubernetes/prefect_agent_conf.yaml | envsubst | kubectl apply -f -'
 
 .PHONY: retrieve-flow-storage-values
 retrieve-flow-storage-values:
