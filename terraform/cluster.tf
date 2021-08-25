@@ -15,7 +15,7 @@ resource "azurerm_kubernetes_cluster" "bakery_cluster" {
 
   auto_scaler_profile {
     scale_down_delay_after_add = "2m"
-    scale_down_unneeded = "2m"
+    scale_down_unneeded        = "2m"
   }
 
   identity {
