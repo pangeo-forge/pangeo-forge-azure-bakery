@@ -11,7 +11,6 @@ This repository serves as the provider of an Terraform Application which deploys
 * [🚀 Deployment - Deploying](#deploying)
 * [🚀 Deployment - Destroying](#destroying)
 * [📊 Flows - Registering the test Recipe](#registering-the-test-recipe)
-* [📊 Flows - Logging](#logging)
 
 # Development
 
