@@ -1,4 +1,4 @@
-# pangeo-forge Azure Bakery ☁️🍞
+# Pangeo Forge Azure Bakery ☁️🍞
 
 This repository serves as the provider of an Terraform Application which deploys the necessary infrastructure to provide a `pangeo-forge` Bakery on Azure
 
