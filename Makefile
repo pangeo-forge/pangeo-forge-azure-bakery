@@ -18,22 +18,9 @@ test:
 generate-bakery-yaml:
 	poetry run dotenv run bash ./scripts/generate-yaml.sh
 
-.PHONY: lint-init
-lint-init:
-	terraform -chdir="terraform/" init -backend=false
-
 .PHONY: lint
-lint: lint-init
-	terraform -chdir="terraform/" validate
-	poetry run flake8 test/recipes/ scripts/
-	poetry run isort --check-only --profile black test/recipes/ scripts/
-	poetry run black --check --diff test/recipes/ scripts/
-
-.PHONY: format
-format:
-	terraform -chdir="terraform/" fmt
-	poetry run isort --profile black test/recipes/ scripts/
-	poetry run black test/recipes/ scripts/
+lint:
+	./scripts/lint.sh
 
 .PHONY: setup-remote-state
 setup-remote-state:
