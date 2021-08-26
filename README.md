@@ -35,100 +35,18 @@ If you're developing on Windows, we'd recommend using either [Git BASH](https://
 
 _**NOTE:** All `make` commands should be run from the **root** of the repository_
 
-### Installing dependencies
-
-This project requires some Python dependencies (Namely `prefect` and `dotenv`), these are so that:
-
-* We can register flows for testing (it was also used to generate `prefect_agent_conf.yaml`)
-* We can use `.env` files to provide both Prefect Flows and Terraform environment variables
-
-To install the dependencies, run:
-
-```bash
-$ make install # Runs `poetry install` to install all Python dependencies required
-```
-
 ### Azure Credential setup
 
 To develop and deploy this project, you will first need to setup some credentials and permissions on Azure
 
 #### Logging in
 
-With the Azure CLI installed, run:
+Run `make init`. This will trigger an azure login
 
-```bash
-$ az login # Opens up a browser window to login with
-[
-  {
-    "cloudName": "AzureCloud",
-    "homeTenantId": "<a-home-tenant-id>",
-    "id": "<a-id>",
-    "isDefault": true,
-    "managedByTenants": [],
-    "name": "SuperAwesomeSubscription",
-    "state": "Enabled",
-    "tenantId": "<a-tenant-id>",
-    "user": {
-      "name": "<your-username>",
-      "type": "user"
-    }
-  },
-  ...
-]
-```
+#### Setup azure credentials
 
-If you notice that the `Subscription` you intend to use has `"isDefault": false`, then refer to [this documentation](https://docs.microsoft.com/en-us/cli/azure/manage-azure-subscriptions-azure-cli#change-the-active-subscription) on how to switch your default `Subsciption`.
-
-#### Getting your Subscription ID
-
-You will need to get the ID for the Subscription that is set to `"isDefault": true`, you can do this with:
-
-```bash
-$ az account list -o table
-Name                CloudName    SubscriptionId                        State    IsDefault
-------------------  -----------  ------------------------------------  -------  -----------
-sub-0               AzureCloud   <an-id>                               Enabled  False
-sub-1               AzureCloud   <an-id>                               Enabled  True
-sub-2               AzureCloud   <an-id>                               Enabled  False
-```
-
-Take note of the `SubscriptionId` value.
-
-#### Creating a Service Principal
-
-You will then need to create a `Service Principal` to deploy as:
-
-```bash
-$ az ad sp create-for-rbac --name "<name-for-your-service-principal>"
-{
-  "appId": "<an-app-id>",
-  "displayName": "<name-for-your-service-principal>",
-  "name": "http://<name-for-your-service-principal>",
-  "password": "<a-password>",
-  "tenant": "<a-tenant-id>"
-}
-```
-
-Take note of the values of `appId`, `password`, and `tenant`.
-
-#### Adding Service Principal permissions
-
-Your service principal will need a few permissions added to it, for these you'll need to get its `objectId`, you can get this by running:
-
-```bash
-$ az ad sp list --display-name "pangeo-forge-sp" --query="[].objectId" -o tsv
-<objectId>
-```
-
-You can then use that `objectId` to run:
-
-```bash
-$ az role assignment create --assignee "<objectId>" --role "Storage Blob Data Contributor"
-$ az role assignment create --assignee "<objectId>" --role "User Access Administrator"
-$ az role assignment create --assignee "<objectId>" --role "Azure Kubernetes Service Cluster User Role"
-```
-
-You should now be setup with the correct permissions to deploy the infrastructure onto Azure. Further reading on Azure Service Principals can be found [here](https://docs.microsoft.com/en-us/cli/azure/ad/sp?view=azure-cli-latest).
+Run `make service-principal` to create the service principal needed in the later steps.
+This script will make the service principal and inject it into the config.
 
 ### `.env` file
 

@@ -18,6 +18,10 @@ test:
 generate-bakery-yaml:
 	poetry run dotenv run bash ./scripts/generate-yaml.sh
 
+.PHONY: service-principal
+service-principal:
+	./scripts/sp-setup.sh
+
 .PHONY: lint
 lint:
 	./scripts/lint.sh
