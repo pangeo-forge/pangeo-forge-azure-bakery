@@ -1,2 +1,2 @@
 #!/bin/bash
-az aks get-credentials --overwrite-existing --resource-group $$(terraform -chdir="terraform" output -raw bakery_resource_group_name) --name $$(terraform -chdir="terraform" output -raw bakery_cluster_name)
+az aks get-credentials --overwrite-existing --resource-group $(terraform -chdir="terraform" output -raw bakery_resource_group_name) --name $(terraform -chdir="terraform" output -raw bakery_cluster_name)
