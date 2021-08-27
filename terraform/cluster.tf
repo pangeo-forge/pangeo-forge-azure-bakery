@@ -13,6 +13,11 @@ resource "azurerm_kubernetes_cluster" "bakery_cluster" {
     enable_auto_scaling = true
   }
 
+  auto_scaler_profile {
+    scale_down_delay_after_add = "2m"
+    scale_down_unneeded        = "2m"
+  }
+
   identity {
     type = "SystemAssigned"
   }
