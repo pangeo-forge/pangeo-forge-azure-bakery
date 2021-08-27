@@ -55,9 +55,6 @@ setup-agent:
 retrieve-flow-storage-values:
 	poetry run dotenv run bash ./scripts/retrieve_flow_storage_values.sh
 
-.PHONY: deploy-bakery
-deploy-bakery: setup-remote-state apply configure-kubectl setup-agent retrieve-flow-storage-values
-
 .PHONY: register-flow
 register-flow:
 	poetry run dotenv run sh -c 'docker run -it --rm \
@@ -73,6 +70,9 @@ getinfo:
 .PHONE: loki
 loki:
 	poetry run dotenv run bash ./scripts/loki.sh $$(pwd)
+
+.PHONY: deploy-bakery
+deploy-bakery: setup-remote-state apply configure-kubectl setup-agent loki retrieve-flow-storage-values
 
 .PHONY: generate-bakery-yaml
 generate-bakery-yaml:
