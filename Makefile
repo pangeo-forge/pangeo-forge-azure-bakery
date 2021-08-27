@@ -45,6 +45,7 @@ destroy: init
 
 .PHONY: configure-kubectl
 configure-kubectl:
+	./scripts/check-prereqs.sh
 	az aks get-credentials --overwrite-existing --resource-group $$(terraform -chdir="terraform" output -raw bakery_resource_group_name) --name $$(terraform -chdir="terraform" output -raw bakery_cluster_name)
 
 .PHONY: setup-agent
@@ -60,7 +61,7 @@ deploy-bakery: setup-remote-state apply configure-kubectl setup-agent retrieve-f
 
 .PHONY: register-flow
 register-flow:
-	poetry run dotenv run sh -c 'docker run -it --rm \
+	poetry run dotenv run sh -c './scripts/check-prereqs.sh && docker run -it --rm \
 	-v $$(pwd)/test/recipes/$(flow):/$(flow) \
 	-e FLOW_STORAGE_CONNECTION_STRING -e FLOW_STORAGE_CONTAINER -e FLOW_CACHE_CONTAINER -e BAKERY_IMAGE \
     -e PREFECT__CLOUD__AGENT__LABELS -e PREFECT_PROJECT -e PREFECT__CLOUD__AUTH_TOKEN \
@@ -68,4 +69,4 @@ register-flow:
 
 .PHONY: generate-bakery-yaml
 generate-bakery-yaml:
-	poetry run dotenv run bash ./scripts/generate-yaml.sh
+	poetry run dotenv run bash -c './scripts/check-prereqs.sh && ./scripts/generate-yaml.sh'

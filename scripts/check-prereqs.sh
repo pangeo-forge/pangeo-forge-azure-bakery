@@ -14,6 +14,13 @@ else
   echo "Terraform in errored state"
 fi
 
+if python --version > /dev/null; then
+  echo "Python OK"
+else
+  OK=0;
+  echo "Python in errored state"
+fi
+
 if poetry --version > /dev/null; then
   echo "Poetry OK"
 else
@@ -34,6 +41,13 @@ if kubectl version --client --short > /dev/null; then
 else
   OK=0;
   echo "Kubectl in errored state"
+fi
+
+if docker -v > /dev/null; then
+  echo "Docker OK"
+else
+  OK=0;
+  echo "Docker in errored state"
 fi
 
 if [ $OK == 0 ]; then
