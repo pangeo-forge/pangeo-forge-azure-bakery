@@ -12,7 +12,7 @@ destroy-remote-state:
 
 .PHONY: init
 init:
-	poetry run dotenv run terraform -chdir="terraform/" init
+	poetry run dotenv run bash -c './scripts/check-prereqs.sh && terraform -chdir="terraform/" init'
 
 .PHONY: lint-init
 lint-init:
@@ -49,11 +49,11 @@ configure-kubectl:
 
 .PHONY: setup-agent
 setup-agent:
-	poetry run dotenv run sh -c 'kubectl create namespace $$BAKERY_NAMESPACE --dry-run=client -o yaml | kubectl apply -f - && cat kubernetes/prefect_agent_conf.yaml | envsubst | kubectl apply -f -'
+	poetry run dotenv run sh -c './scripts/check-prereqs.sh  && kubectl create namespace $$BAKERY_NAMESPACE --dry-run=client -o yaml | kubectl apply -f - && cat kubernetes/prefect_agent_conf.yaml | envsubst | kubectl apply -f -'
 
 .PHONY: retrieve-flow-storage-values
 retrieve-flow-storage-values:
-	poetry run dotenv run bash ./scripts/retrieve_flow_storage_values.sh
+	poetry run dotenv run bash -c './scripts/check-prereqs.sh && ./scripts/retrieve_flow_storage_values.sh'
 
 .PHONY: deploy-bakery
 deploy-bakery: setup-remote-state apply configure-kubectl setup-agent retrieve-flow-storage-values
