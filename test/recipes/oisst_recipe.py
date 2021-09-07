@@ -114,7 +114,7 @@ def register_recipe(recipe: BaseRecipe):
         cluster_class="dask_kubernetes.KubeCluster",
         cluster_kwargs={
             "pod_template": worker_spec,
-           "scheduler_pod_template": scheduler_spec
+            "scheduler_pod_template": scheduler_spec
         },
         adapt_kwargs={"maximum": 10},
     )
