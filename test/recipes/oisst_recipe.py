@@ -99,7 +99,7 @@ def register_recipe(recipe: BaseRecipe):
 
     scheduler_spec = make_pod_spec(
         image=os.environ["BAKERY_IMAGE"],
-        labels={"flow": flow_name, "WHY": "Samuel_L_Jackson"},
+        labels={"flow": flow_name},
         memory_limit="1Gi",
         memory_request="500Mi",
         cpu_limit="512m",
