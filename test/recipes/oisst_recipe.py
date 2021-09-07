@@ -6,7 +6,7 @@ from functools import wraps
 import pandas as pd
 import yaml
 from adlfs import AzureBlobFileSystem
-from dask_kubernetes.objects import make_pod_spec
+from dask_kubernetes.objects import make_pod_spec, clean_pod_template
 from pangeo_forge_recipes.patterns import pattern_from_file_sequence
 from pangeo_forge_recipes.recipes import XarrayZarrRecipe
 from pangeo_forge_recipes.recipes.base import BaseRecipe
@@ -83,22 +83,38 @@ def register_recipe(recipe: BaseRecipe):
         cpu_request="1000m",
         memory_request="3Gi",
     )
+    worker_spec = make_pod_spec(
+      image=os.environ["BAKERY_IMAGE"],
+      labels={"flow": flow_name},
+      memory_limit="1Gi",
+      memory_request="500Mi",
+      cpu_limit="512m",
+      cpu_request="256m",
+      env={
+          "AZURE_STORAGE_CONNECTION_STRING": os.environ[
+              "FLOW_STORAGE_CONNECTION_STRING"
+          ]
+      },
+    )
+
+    scheduler_spec = make_pod_spec(
+        image=os.environ["BAKERY_IMAGE"],
+        labels={"flow": flow_name, "WHY": "Samuel_L_Jackson"},
+        memory_limit="1Gi",
+        memory_request="500Mi",
+        cpu_limit="512m",
+        cpu_request="256m",
+    )
+    scheduler_spec.spec.containers[0].args = ["dask-scheduler"]
+    scheduler_spec = clean_pod_template(
+        scheduler_spec, pod_type="scheduler"
+    )
+
     flow.executor = DaskExecutor(
         cluster_class="dask_kubernetes.KubeCluster",
         cluster_kwargs={
-            "pod_template": make_pod_spec(
-                image=os.environ["BAKERY_IMAGE"],
-                labels={"flow": flow_name},
-                memory_limit="1Gi",
-                memory_request="500Mi",
-                cpu_limit="512m",
-                cpu_request="256m",
-                env={
-                    "AZURE_STORAGE_CONNECTION_STRING": os.environ[
-                        "FLOW_STORAGE_CONNECTION_STRING"
-                    ]
-                },
-            ),
+            "pod_template": worker_spec,
+           "scheduler_pod_template": scheduler_spec
         },
         adapt_kwargs={"maximum": 10},
     )
