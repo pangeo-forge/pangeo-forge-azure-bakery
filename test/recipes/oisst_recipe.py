@@ -99,6 +99,12 @@ def register_recipe(recipe: BaseRecipe):
                     ]
                 },
             ),
+            "scheduler_pod_template": make_pod_spec(
+                memory_limit="1Gi",
+                memory_request="500Mi",
+                cpu_limit="512m",
+                cpu_request="256m",
+            ),
         },
         adapt_kwargs={"maximum": 10},
     )
