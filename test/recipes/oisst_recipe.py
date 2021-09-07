@@ -6,7 +6,7 @@ from functools import wraps
 import pandas as pd
 import yaml
 from adlfs import AzureBlobFileSystem
-from dask_kubernetes.objects import make_pod_spec, clean_pod_template
+from dask_kubernetes.objects import clean_pod_template, make_pod_spec
 from pangeo_forge_recipes.patterns import pattern_from_file_sequence
 from pangeo_forge_recipes.recipes import XarrayZarrRecipe
 from pangeo_forge_recipes.recipes.base import BaseRecipe
