@@ -3,7 +3,7 @@ init:
 	./scripts/init.sh
 
 .PHONY: install
-install:
+install: loki
 	./scripts/install.sh
 
 .PHONY: destroy
