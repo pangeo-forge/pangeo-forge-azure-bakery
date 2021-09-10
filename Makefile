@@ -38,3 +38,7 @@ setup-remote-state:
 .PHONY: destroy-remote-state
 destroy-remote-state:
 	poetry run dotenv run sh -c 'az group delete --resource-group $$TF_VAR_identifier-bakery-remote-state-resource-group --yes'
+
+.PHONY: get-grafana-admin
+get-grafana-admin:
+	./scripts/get-grafana-admin.sh
