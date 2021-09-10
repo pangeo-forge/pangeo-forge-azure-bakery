@@ -8,4 +8,4 @@ docker run -it --rm \
   -e PREFECT__CLOUD__AGENT__LABELS \
   -e PREFECT_PROJECT \
   -e PREFECT__CLOUD__AUTH_TOKEN \
-  $BAKERY_IMAGE python3 /$FLOW'
+  $BAKERY_IMAGE conda run -n notebook python3 /$FLOW'
