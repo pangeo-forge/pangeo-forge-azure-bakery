@@ -11,9 +11,9 @@ deploy:
 destroy:
 	./scripts/destroy.sh
 
-.PHONY: test
-test:
-	./scripts/test.sh
+.PHONY: test-flow
+test-flow:
+	./scripts/test-flow.sh
 
 .PHONE: getinfo
 getinfo:
