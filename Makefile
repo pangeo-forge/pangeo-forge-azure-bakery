@@ -3,8 +3,9 @@ init:
 	./scripts/init.sh
 
 .PHONY: deploy
-deploy: loki
+deploy:
 	./scripts/deploy.sh
+	poetry run dotenv run bash ./scripts/loki.sh $$(pwd)
 
 .PHONY: destroy
 destroy:
@@ -17,10 +18,6 @@ test:
 .PHONE: getinfo
 getinfo:
 	poetry run dotenv run bash ./scripts/get-info.sh $$(pwd)
-
-.PHONE: loki
-loki:
-	poetry run dotenv run bash ./scripts/loki.sh $$(pwd)
 
 .PHONY: generate-bakery-yaml
 generate-bakery-yaml:
