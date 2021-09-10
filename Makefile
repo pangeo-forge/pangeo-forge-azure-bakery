@@ -14,6 +14,14 @@ destroy:
 test:
 	./scripts/test.sh
 
+.PHONE: getinfo
+getinfo:
+	poetry run dotenv run bash ./scripts/get-info.sh $$(pwd)
+
+.PHONE: loki
+loki:
+	poetry run dotenv run bash ./scripts/loki.sh $$(pwd)
+
 .PHONY: generate-bakery-yaml
 generate-bakery-yaml:
 	poetry run dotenv run bash ./scripts/generate-yaml.sh
