@@ -88,7 +88,7 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 
 > This will initialise terraform and perform an Azure login
 
-**`make install`**
+**`make deploy`**
 
 > This deploy the bakery
  
@@ -153,7 +153,7 @@ A Standard Deployment of the Azure Bakery comprises of several steps, they are l
 Should you wish to just deploy the Bakery without diving into these steps, ensure you've met all of the [prerequisites](#prerequisites) for deployment, then you can simply run:
 
 ```bash
-$ make install # Deploys all the Azure Bakery infrastructure and prepares `.env` for further usage
+$ make deploy # Deploys all the Azure Bakery infrastructure and prepares `.env` for further usage
 ```
 
 **Deployment steps**
@@ -194,7 +194,7 @@ $ make destroy-remote-state # Uses Azure CLI to destroy the Remote State infrast
 
 ## Registering the test Recipe
 
-For quick testing of your Bakery deployment, there's a Recipe setup as a Flow within `flow_test/` that you can register and run. Before you register the example Flow, you must have the values of `PREFECT__CLOUD__AUTH_TOKEN`, `PREFECT_PROJECT`, `PREFECT__CLOUD__AGENT__LABELS`, `FLOW_STORAGE_CONTAINER`, `FLOW_CACHE_CONTAINER`, `FLOW_STORAGE_CONNECTION_STRING`, and `BAKERY_IMAGE` present and populated in `.env`. You must also have run [`make install`](#makefile-goodness).
+For quick testing of your Bakery deployment, there's a Recipe setup as a Flow within `flow_test/` that you can register and run. Before you register the example Flow, you must have the values of `PREFECT__CLOUD__AUTH_TOKEN`, `PREFECT_PROJECT`, `PREFECT__CLOUD__AGENT__LABELS`, `FLOW_STORAGE_CONTAINER`, `FLOW_CACHE_CONTAINER`, `FLOW_STORAGE_CONNECTION_STRING`, and `BAKERY_IMAGE` present and populated in `.env`. You must also have run [`make deploy`](#makefile-goodness).
 
 When your `.env` is populated and you've installed the project dependencies, you can register the Flow by running:
 
