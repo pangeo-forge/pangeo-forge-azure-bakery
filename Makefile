@@ -56,9 +56,6 @@ setup-agent:
 retrieve-flow-storage-values:
 	poetry run dotenv run bash -c './scripts/check-prereqs.sh && ./scripts/retrieve_flow_storage_values.sh'
 
-.PHONY: deploy-bakery
-deploy-bakery: setup-remote-state apply configure-kubectl setup-agent retrieve-flow-storage-values
-
 .PHONY: register-flow
 register-flow:
 	poetry run dotenv run sh -c './scripts/check-prereqs.sh && docker run -it --rm \
@@ -66,6 +63,17 @@ register-flow:
 	-e FLOW_STORAGE_CONNECTION_STRING -e FLOW_STORAGE_CONTAINER -e FLOW_CACHE_CONTAINER -e BAKERY_IMAGE \
     -e PREFECT__CLOUD__AGENT__LABELS -e PREFECT_PROJECT -e PREFECT__CLOUD__AUTH_TOKEN \
     $$BAKERY_IMAGE python3 /$(flow)'
+
+.PHONE: getinfo
+getinfo:
+	poetry run dotenv run bash ./scripts/get-info.sh $$(pwd)
+
+.PHONE: loki
+loki:
+	poetry run dotenv run bash ./scripts/loki.sh $$(pwd)
+
+.PHONY: deploy-bakery
+deploy-bakery: setup-remote-state apply configure-kubectl setup-agent loki retrieve-flow-storage-values
 
 .PHONY: generate-bakery-yaml
 generate-bakery-yaml:
