@@ -35,7 +35,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          make install
+          poetry install
 
       - name: Linting
         run: |

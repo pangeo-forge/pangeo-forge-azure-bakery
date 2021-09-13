@@ -10,9 +10,9 @@ STORAGE_PLATFORM=$PLATFORM
 STORAGE_REGION=$REGION
 STORAGE_TARGET_NAME=$FLOW_CACHE_CONTAINER
 FLOW_STORAGE=$FLOW_STORAGE_CONTAINER
-PANGEO_FORGE_VERSION=$(echo $BAKERY_IMAGE | sed -rn "s/.*pangeoforgerecipes-(.*)/\1/p")
-PREFECT_VERSION=$(echo $BAKERY_IMAGE | sed -rn "s/.*prefect-(.*)_pangeoforgerecipes.*/\1/p")
-PANGEO_NOTEBOOK_VERSION=$(echo $BAKERY_IMAGE | sed -rn "s/.*pangeonotebook-(.*)_prefect.*/\1/p")
+PANGEO_FORGE_VERSION=$(echo $BAKERY_IMAGE | sed -En "s/.*pangeoforgerecipes-(.*)/\1/p")
+PREFECT_VERSION=$(echo $BAKERY_IMAGE | sed -En "s/.*prefect-(.*)_pangeoforgerecipes.*/\1/p")
+PANGEO_NOTEBOOK_VERSION=$(echo $BAKERY_IMAGE | sed -En "s/.*pangeonotebook-(.*)_prefect.*/\1/p")
 WORKER_IMAGE=$BAKERY_IMAGE
 
 function cleanup {
