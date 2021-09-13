@@ -84,17 +84,17 @@ def register_recipe(recipe: BaseRecipe):
         memory_request="3Gi",
     )
     worker_spec = make_pod_spec(
-      image=os.environ["BAKERY_IMAGE"],
-      labels={"flow": flow_name},
-      memory_limit="1Gi",
-      memory_request="500Mi",
-      cpu_limit="512m",
-      cpu_request="256m",
-      env={
-          "AZURE_STORAGE_CONNECTION_STRING": os.environ[
-              "FLOW_STORAGE_CONNECTION_STRING"
-          ]
-      },
+        image=os.environ["BAKERY_IMAGE"],
+        labels={"flow": flow_name},
+        memory_limit="1Gi",
+        memory_request="500Mi",
+        cpu_limit="512m",
+        cpu_request="256m",
+        env={
+            "AZURE_STORAGE_CONNECTION_STRING": os.environ[
+                "FLOW_STORAGE_CONNECTION_STRING"
+            ]
+        },
     )
 
     scheduler_spec = make_pod_spec(
@@ -106,15 +106,13 @@ def register_recipe(recipe: BaseRecipe):
         cpu_request="256m",
     )
     scheduler_spec.spec.containers[0].args = ["dask-scheduler"]
-    scheduler_spec = clean_pod_template(
-        scheduler_spec, pod_type="scheduler"
-    )
+    scheduler_spec = clean_pod_template(scheduler_spec, pod_type="scheduler")
 
     flow.executor = DaskExecutor(
         cluster_class="dask_kubernetes.KubeCluster",
         cluster_kwargs={
             "pod_template": worker_spec,
-            "scheduler_pod_template": scheduler_spec
+            "scheduler_pod_template": scheduler_spec,
         },
         adapt_kwargs={"maximum": 10},
     )
