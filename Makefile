@@ -3,9 +3,8 @@ init:
 	./scripts/init.sh
 
 .PHONY: deploy
-deploy:
+loki deploy:
 	./scripts/deploy.sh
-	poetry run dotenv run bash ./scripts/loki.sh $$(pwd)
 
 .PHONY: destroy
 destroy:
@@ -14,6 +13,10 @@ destroy:
 .PHONY: test-flow
 test-flow:
 	./scripts/test-flow.sh
+
+.PHONY: loki
+loki:
+	poetry run dotenv run bash ./scripts/loki.sh $$(pwd)
 
 .PHONE: getinfo
 getinfo:
