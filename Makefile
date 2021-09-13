@@ -23,6 +23,10 @@ test-flow:
 loki: deploy
 	poetry run dotenv run bash ./scripts/loki.sh $$(pwd)
 
+.PHONY: get-cluster-creds
+get-cluster-creds:
+	poetry run dotenv run bash ./scripts/k8s-connect.sh
+
 .PHONE: getinfo
 getinfo:
 	poetry run dotenv run bash ./scripts/get-info.sh $$(pwd)
