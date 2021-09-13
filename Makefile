@@ -1,9 +1,14 @@
+#Composite Steps
+.PHONY: deploy
+deploy: deploy-cluster loki
+
+#Individual Steps
 .PHONY: init
 init:
 	./scripts/init.sh
 
-.PHONY: deploy
-loki deploy:
+.PHONY: deploy-cluster
+deploy-cluster:
 	./scripts/deploy.sh
 
 .PHONY: destroy
@@ -15,7 +20,7 @@ test-flow:
 	./scripts/test-flow.sh
 
 .PHONY: loki
-loki:
+loki: deploy
 	poetry run dotenv run bash ./scripts/loki.sh $$(pwd)
 
 .PHONE: getinfo
