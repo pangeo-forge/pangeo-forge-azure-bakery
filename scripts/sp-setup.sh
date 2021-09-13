@@ -5,8 +5,8 @@ if [ "$RESULT_LOGIN" != 0 ]; then
   az login
 fi
 ACCOUNT_DETAILS=$(az account show)
-TENANT_ID=$(echo "$ACCOUNT_DETAILS" | grep "tenantId" | sed -rn "s/\"tenantId\": \"(.*)\",/\1/p" | xargs)
-SUBSCRIPTION_ID=$(echo "$ACCOUNT_DETAILS" | grep "id" | sed -rn "s/\"id\": \"(.*)\",/\1/p" | xargs)
+TENANT_ID=$(echo "$ACCOUNT_DETAILS" | grep "tenantId" | sed -En "s/\"tenantId\": \"(.*)\",/\1/p" | xargs)
+SUBSCRIPTION_ID=$(echo "$ACCOUNT_DETAILS" | grep "id" | sed -En "s/\"id\": \"(.*)\",/\1/p" | xargs)
 echo "Tenant is:$TENANT_ID"
 echo "Subscription is:$SUBSCRIPTION_ID"
 
@@ -17,8 +17,8 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-APP_ID=$(echo "$RESULT_SP_CREATE" | grep "appId" | sed -rn "s/\"appId\": \"(.*)\",/\1/p" | xargs)
-APP_PASSWORD=$(echo "$RESULT_SP_CREATE" | grep "password" | sed -rn "s/\"password\": \"(.*)\",/\1/p" | xargs)
+APP_ID=$(echo "$RESULT_SP_CREATE" | grep "appId" | sed -En "s/\"appId\": \"(.*)\",/\1/p" | xargs)
+APP_PASSWORD=$(echo "$RESULT_SP_CREATE" | grep "password" | sed -En "s/\"password\": \"(.*)\",/\1/p" | xargs)
 echo "App ID is $APP_ID"
 APP_OBJECT_ID=$(az ad sp list --filter "appId eq '$APP_ID'" --query="[].objectId" -o tsv)
 echo App Object ID:$APP_OBJECT_ID

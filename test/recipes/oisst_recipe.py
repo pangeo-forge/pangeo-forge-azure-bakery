@@ -11,7 +11,7 @@ from pangeo_forge_recipes.patterns import pattern_from_file_sequence
 from pangeo_forge_recipes.recipes import XarrayZarrRecipe
 from pangeo_forge_recipes.recipes.base import BaseRecipe
 from pangeo_forge_recipes.storage import CacheFSSpecTarget, FSSpecTarget
-from prefect import storage
+from prefect import storage, client
 from prefect.executors.dask import DaskExecutor
 from prefect.run_configs.kubernetes import KubernetesRun
 from rechunker.executors import PrefectPipelineExecutor
@@ -120,7 +120,8 @@ def register_recipe(recipe: BaseRecipe):
 
     flow.name = flow_name
     project_name = os.environ["PREFECT_PROJECT"]
-    flow.register(project_name=project_name)
+    flow_id = flow.register(project_name=project_name)
+    return flow_id
 
 
 if __name__ == "__main__":
@@ -138,4 +139,7 @@ if __name__ == "__main__":
     pattern = pattern_from_file_sequence(input_urls, "time", nitems_per_file=1)
 
     recipe = XarrayZarrRecipe(pattern, inputs_per_chunk=20)
-    register_recipe(recipe)
+    flow_id = register_recipe(recipe)
+    prefect_client = client.Client()
+    prefect_client.create_flow_run(flow_id=flow_id)
+

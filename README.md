@@ -1,4 +1,4 @@
-# pangeo-forge Azure Bakery ☁️🍞
+# Pangeo Forge Azure Bakery ☁️🍞
 
 This repository serves as the provider of an Terraform Application which deploys the necessary infrastructure to provide a `pangeo-forge` Bakery on Azure
 
@@ -36,100 +36,18 @@ If you're developing on Windows, we'd recommend using either [Git BASH](https://
 
 _**NOTE:** All `make` commands should be run from the **root** of the repository_
 
-### Installing dependencies
-
-This project requires some Python dependencies (Namely `prefect` and `dotenv`), these are so that:
-
-* We can register flows for testing (it was also used to generate `prefect_agent_conf.yaml`)
-* We can use `.env` files to provide both Prefect Flows and Terraform environment variables
-
-To install the dependencies, run:
-
-```bash
-$ make install # Runs `poetry install` to install all Python dependencies required
-```
-
 ### Azure Credential setup
 
 To develop and deploy this project, you will first need to setup some credentials and permissions on Azure
 
 #### Logging in
 
-With the Azure CLI installed, run:
+Run `make init`. This will trigger an azure login
 
-```bash
-$ az login # Opens up a browser window to login with
-[
-  {
-    "cloudName": "AzureCloud",
-    "homeTenantId": "<a-home-tenant-id>",
-    "id": "<a-id>",
-    "isDefault": true,
-    "managedByTenants": [],
-    "name": "SuperAwesomeSubscription",
-    "state": "Enabled",
-    "tenantId": "<a-tenant-id>",
-    "user": {
-      "name": "<your-username>",
-      "type": "user"
-    }
-  },
-  ...
-]
-```
+#### Setup azure credentials
 
-If you notice that the `Subscription` you intend to use has `"isDefault": false`, then refer to [this documentation](https://docs.microsoft.com/en-us/cli/azure/manage-azure-subscriptions-azure-cli#change-the-active-subscription) on how to switch your default `Subsciption`.
-
-#### Getting your Subscription ID
-
-You will need to get the ID for the Subscription that is set to `"isDefault": true`, you can do this with:
-
-```bash
-$ az account list -o table
-Name                CloudName    SubscriptionId                        State    IsDefault
-------------------  -----------  ------------------------------------  -------  -----------
-sub-0               AzureCloud   <an-id>                               Enabled  False
-sub-1               AzureCloud   <an-id>                               Enabled  True
-sub-2               AzureCloud   <an-id>                               Enabled  False
-```
-
-Take note of the `SubscriptionId` value.
-
-#### Creating a Service Principal
-
-You will then need to create a `Service Principal` to deploy as:
-
-```bash
-$ az ad sp create-for-rbac --name "<name-for-your-service-principal>"
-{
-  "appId": "<an-app-id>",
-  "displayName": "<name-for-your-service-principal>",
-  "name": "http://<name-for-your-service-principal>",
-  "password": "<a-password>",
-  "tenant": "<a-tenant-id>"
-}
-```
-
-Take note of the values of `appId`, `password`, and `tenant`.
-
-#### Adding Service Principal permissions
-
-Your service principal will need a few permissions added to it, for these you'll need to get its `objectId`, you can get this by running:
-
-```bash
-$ az ad sp list --display-name "pangeo-forge-sp" --query="[].objectId" -o tsv
-<objectId>
-```
-
-You can then use that `objectId` to run:
-
-```bash
-$ az role assignment create --assignee "<objectId>" --role "Storage Blob Data Contributor"
-$ az role assignment create --assignee "<objectId>" --role "User Access Administrator"
-$ az role assignment create --assignee "<objectId>" --role "Azure Kubernetes Service Cluster User Role"
-```
-
-You should now be setup with the correct permissions to deploy the infrastructure onto Azure. Further reading on Azure Service Principals can be found [here](https://docs.microsoft.com/en-us/cli/azure/ad/sp?view=azure-cli-latest).
+Run `make service-principal` to create the service principal needed in the later steps.
+This script will make the service principal and inject it into the config.
 
 ### `.env` file
 
@@ -166,10 +84,18 @@ An example called `example.env` is available for you to copy, rename, and fill o
 ## Makefile goodness
 
 A `Makefile` is available in the root of the repository to abstract away commonly used commands for development:
+**`make init`**
 
-**`make install`**
+> This will initialise terraform and perform an Azure login
 
-> This will run `poetry install` with the contents of `poetry.lock`
+**`make deploy`**
+
+> This deploy the bakery
+ 
+**`make test`**
+
+> This uses the bakery image defined in `BAKERY_IMAGE` to register your Flow with Prefect. It deploys the oisst test recipe from the test directory
+
 
 **`make setup-remote-state`**
 
@@ -179,57 +105,13 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 
 > This will use Azure CLI to destroy the Remote State infrastructure provisioned via `make setup-remote-state`. The command assumes that the Resource Group is named as defined in the `setup_remote_state.sh` script: `<identifier>-bakery-remote-state-resource-group`
 
-**`make init`**
-
-> This will run `terraform init` within the `terraform/` directory, installing any providers required for deployment. You **must** have run `make setup-remote-state` beforehand
-
-**`make lint-init`**
-
-> This will run `terraform init -backend=false` within the `terraform/` directory, installing any providers required for terraform to run `validate`. You **must** have run `make setup-remote-state` beforehand
-
 **`make lint`**
 
 > This will run `terraform validate` within the `terraform/` directory, showing you anything that is incorrect in your Terraform scripts. It also runs isort, black, and flake8 to highlight any linting issues in `flow_test/` and `scripts/`
 
-**`make format`**
-
-> This will run `terraform fmt` within the `terraform/` directory. It also runs isort and black in `flow_test/` and `scripts/`. This **will** modify files if issues were found
-
-**`make plan`**
-
-> This will run `terraform plan` within the `terraform/` directory using the contents of your `.env` file. You **must** have run `make setup-remote-state` beforehand
-
-**`make apply`**
-
-> This will run `terraform apply` within the `terraform/` directory using the contents of your `.env` file. The deployment is auto-approved, so **make sure** you know what you're changing with your deployment first! (Best to run `make plan` to check!). You **must** have run `make setup-remote-state` beforehand
-
 **`make destroy`**
 
 > This will run `terraform destroy` within the `terraform/` directory using the contents of your `.env` file. The destroy is auto-approved, so **make sure** you know what you're destroying first! You **must** have run `make setup-remote-state` beforehand
-
-**`make configure-kubectl`**
-
-> This will setup `kubectl` to point to your deployed AKS cluster using the output variables terraform creates. You **must** have deployed the cluster first
-
-**`make setup-agent`**
-
-> This will create a namespace on the AKS cluster with the name of `BAKERY_NAMESPACE`, then the agent configuration in `prefect_agent_conf.yaml` will be applied to the cluster. You **must** have deployed the cluster first
-
-**`make retrieve-flow-storage-values`**
-
-> This will use Terraform and Azure CLI to populate `.env` with the values of `FLOW_STORAGE_CONTAINER`, `FLOW_CACHE_CONTAINER`, and `FLOW_STORAGE_CONNECTION_STRING` so that you can register Flows. You **must** have deployed the cluster first
-
-**`make build-and-push-image`**
-
-> This will use Docker and Azure CLI to build and push the image defined in [Deployment -> Pushing the Prefect Agent/Worker image] to ACR. You **must** have deployed the cluster first
-
-**`make deploy-bakery`**
-
-> This encapsulates all the infrastructure and `.env` setup steps needed to deploy the Azure Bakery. This command is the same as running: `make setup-remote-state apply build-and-push-image configure-kubectl setup-agent retrieve-flow-storage-values`.
-
-**`make register-flow`**
-
-> This uses the bakery image defined in `BAKERY_IMAGE` to register your Flow with Prefect. It takes a parameter `flow` which is the Python file within `flow_test/` you'd like to use. You would use it like: `$ make register-flow flow=oisst_recipe.py`
 
 **`make generate-bakery-yaml`**
 
@@ -238,9 +120,6 @@ A `Makefile` is available in the root of the repository to abstract away commonl
 # Deployment
 
 ## Prerequisites
-
-### Authentication and Dependencies
-Before you deploy the infrastructure, ensure you've taken all the steps outlined under [Azure Credential setup](#azure-credential-setup) and have run [`make install`](#makefile-goodness)
 
 ### Terraform Remote State infrastructure
 
@@ -274,53 +153,13 @@ A Standard Deployment of the Azure Bakery comprises of several steps, they are l
 Should you wish to just deploy the Bakery without diving into these steps, ensure you've met all of the [prerequisites](#prerequisites) for deployment, then you can simply run:
 
 ```bash
-$ make deploy-bakery # Deploys all the Azure Bakery infrastructure and prepares `.env` for further usage
+$ make deploy # Deploys all the Azure Bakery infrastructure and prepares `.env` for further usage
 ```
 
 **Deployment steps**
 
 0. [Ensure you've done the pre-requisites](#prerequisites)
-1. [Confirm what's being deployed via Terraform](#confirm-what's-being-deployed-via-terraform)
-2. [Deploying AKS via Terraform](#deploying-aks-via-terraform)
-3. [Pushing the Prefect Agent/Worker image](#pushing-the-prefect-agent/worker-image)
-4. [Setting up the Prefect Agent](#setting-up-the-prefect-agent)
-5. [Retrieving Flow Storage Container names and Storage Connection String](#retrieving-flow-storage-container-names-and-storage-connection-string)
-
-### Confirm what's being deployed via Terraform
-
-You can check _what_ you'll be deploying by running:
-
-```bash
-$ make plan # Outputs the result of `terraform plan`
-```
-
-### Deploying AKS via Terraform
-
-To deploy the Azure infrastructure required to host your Bakery, you can run:
-
-```bash
-$ make apply # Deploys the Bakery AKS Cluster and storage
-```
-
-### Setting up the Prefect Agent
-
-To setup the Prefect Agent for your Bakery within your AKS cluster, you can run:
-
-```bash
-$ make configure-kubectl # Uses the output from Terraform to configure kubectl to point to the newly deployed cluster
-$ make setup-agent # This will create a namespace on the AKS cluster with the name of `BAKERY_NAMESPACE`, then the agent configuration in `prefect_agent_conf.yaml` will be applied to the cluster, registering itself as an Agent for the Prefect Project defined in `PREFECT_PROJECT`, using `PREFECT__CLOUD__AGENT__AUTH_TOKEN` to authenticate
-```
-
-### Retrieving Flow Storage Container names and Storage Connection String
-
-To successfully register and store your flow, you will need to retrieve the Container name and Connection string, you can run the following to populate the values of `FLOW_STORAGE_CONTAINER`, `FLOW_CACHE_CONTAINER`, and `FLOW_STORAGE_CONNECTION_STRING`:
-
-```bash
-$ make retrieve-flow-storage-values
-Didnt find FLOW_STORAGE_CONTAINER set in `.env`, set to: FLOW_STORAGE_CONTAINER="<identifier>-bakery-flow-storage-container"
-Didnt find FLOW_CACHE_CONTAINER set in `.env`, set to: FLOW_CACHE_CONTAINER="<identifier>-bakery-flow-cache-container"
-Didnt find FLOW_STORAGE_CONNECTION_STRING set in `.env`, set to: FLOW_STORAGE_CONNECTION_STRING="<connection-string>"
-```
+1. [Deploy the bakery](#deploying)
 
 ## Destroying
 
@@ -353,14 +192,14 @@ $ make destroy-remote-state # Uses Azure CLI to destroy the Remote State infrast
 
 # Flows
 
-## Registering the test Recipe
+## Running the test Recipe
 
-For quick testing of your Bakery deployment, there's a Recipe setup as a Flow within `flow_test/` that you can register and run. Before you register the example Flow, you must have the values of `PREFECT__CLOUD__AUTH_TOKEN`, `PREFECT_PROJECT`, `PREFECT__CLOUD__AGENT__LABELS`, `FLOW_STORAGE_CONTAINER`, `FLOW_CACHE_CONTAINER`, `FLOW_STORAGE_CONNECTION_STRING`, and `BAKERY_IMAGE` present and populated in `.env`. You must also have run [`make install`](#makefile-goodness).
+For quick testing of your Bakery deployment, there's a Recipe setup as a Flow within `flow_test/` that you can register and run. Before you register the example Flow, you must have the values of `PREFECT__CLOUD__AUTH_TOKEN`, `PREFECT_PROJECT`, `PREFECT__CLOUD__AGENT__LABELS`, `FLOW_STORAGE_CONTAINER`, `FLOW_CACHE_CONTAINER`, `FLOW_STORAGE_CONNECTION_STRING`, and `BAKERY_IMAGE` present and populated in `.env`. You must also have run [`make deploy`](#makefile-goodness).
 
 When your `.env` is populated and you've installed the project dependencies, you can register the Flow by running:
 
 ```
-$ make register-flow flow=<name-of-flow-file-in-flow_test/>.py
+$ make test-flow
 ...
 [2021-04-29 13:28:22+0100] INFO - prefect.Azure | Uploading test-noaa-flow/2021-06-03t10-07-21-944813-00-00 to <identifier>-bakery-flow-storage-container
 Flow URL: https://cloud.prefect.io/<your-account>/flow/aef82344-8a31-485b-a189-bc1398755f9e
@@ -369,19 +208,31 @@ Flow URL: https://cloud.prefect.io/<your-account>/flow/aef82344-8a31-485b-a189-b
  └── Labels: <PREFECT__CLOUD__AGENT__LABELS>
 ```
 
-You can then navigate to [cloud.prefect.io](https://cloud.prefect.io/), find your Flow, and run it.
-
 # Generating Bakery YAML files
 - To generate a bakery YAML file, run `make generatebakeryyaml`.
 - The resulting YAML can be added to the bakery definition repo here https://github.com/pangeo-forge/bakery-database/blob/main/bakeries.yaml
 
 # Debugging
-1. Run `make loki` to deploy loki to the cluster via helm if you haven't already
-   1. You will need to get helm(https://helm.sh/docs/intro/install/) to deploy loki to the cluster
-   2. Get the info needed  to access the loki instance by using the instructions output to the terminal in the previous step
-   3. Log in to grafana inline with the above
-      1. OR Use Lens to connect to Grafana by navigating to the loki-stack namespace, going to the loki-grafana pod, opening its properties and clicking on the "grafana:3000/TCP" entry to bring grafana to your local machine.
-   4. Add the loki datasource inline with the instructions above, the URL of the Loki Stack is `http://loki-stack.loki-stack.svc.cluster.local:3100`
-3. Run `make getinfo` to see all the current flow runs on the prefect agent
-4. Pick the flow run you are interested in
-5. Use the provided information to query loki for the worker/scheduler logs you are interested in
+1. Open Lens and add your cluster (this will leverage your updated kubectl config).
+2. To view pods in your pangeoforge namespace click workloads and select the namespace you specified when deploying.
+3. Verify your Prefect agent pod is healthy.
+
+### To view Dask cluster logs via Grafana  
+1. Get the info needed to access the Grafana instance with `make get-grafana-admin`.
+2. Use Lens to connect to Grafana by navigating Network -> Services and click `loki-grafana` and then click the `80:3000/TCP` link and use username `admin` and the password obtained in step 1.
+3. Add the Loki datasource in Grafana.  
+   1. Click the the configuration incon on the left
+   2. Click Add Datasource
+   3. Select Loki
+   4. The URL of the Loki Stack is `http://loki-stack.loki-stack.svc.cluster.local:3100`
+   5. Click Save and Test
+4. Browsing logs
+   1. Return to the main page and select the Explore icon on the left.
+   2. Click Log Browser.
+   3. After running a test flow via `make test-flow` use `make getinfo` to view a list of flow runs.
+   4. Select the flow run of interest and a set of Loki search terms will be provided.
+   5. Enter the search term in the Log Browser bar and click Shift+Enter.
+   6. To include additional search terms you can add `| "<your search term>" to the exising string.
+
+### Dask dashboard
+  1. Once your flow is running and the Dask cluster pods have been created the Dask dashboard can be accessed at http://localhost:8787.
