@@ -20,7 +20,7 @@ echo "- Setup exit trap"
 trap cleanupK8s EXIT
 
 echo "- Gathering data"
-mapfile -t < <(kubectl logs -n "$BAKERY_NAMESPACE" deployment/prefect-agent | sed -rn "s/\[([0-9]+-[0-9]+-[0-9]+) ([0-9]+:[0-9]+:[0-9]+).* agent \| Completed deployment of flow run (.*)/\1@\2-\3/p")
+mapfile -t < <(kubectl logs -n "$BAKERY_NAMESPACE" deployment/prefect-agent | sed -En "s/\[([0-9]+-[0-9]+-[0-9]+) ([0-9]+:[0-9]+:[0-9]+).* agent \| Completed deployment of flow run (.*)/\1@\2-\3/p")
 if [ ${#MAPFILE[@]} == 0 ]; then
   echo "No flow runs have been performed on this agent yet"
   exit 1
@@ -32,7 +32,7 @@ do
     echo "Selected number: $REPLY"
     break
 done
-ID=$(echo $run | sed -rn "s/([0-9]+-[0-9]+-[0-9]+)@([0-9]+:[0-9]+:[0-9]+)-(.*)/\3/p")
+ID=$(echo $run | sed -En "s/([0-9]+-[0-9]+-[0-9]+)@([0-9]+:[0-9]+:[0-9]+)-(.*)/\3/p")
 echo "---------------------------------------------------------------------------------"
 echo "Jobs for flow run $run"
 echo "---------------------------------------------------------------------------------"
@@ -42,13 +42,13 @@ echo "--------------------------------------------------------------------------
 echo "Dask clusters spun up from job $JOB_ID for flow run $ID"
 echo "---------------------------------------------------------------------------------"
 LOGS=$(kubectl logs -n "$BAKERY_NAMESPACE" jobs/$JOB_ID)
-DASK_CLUSTER=$(echo $LOGS | sed -rn "s/.* The Dask dashboard is available at http:\/\/(.*)."$BAKERY_NAMESPACE".*/\1/p")
+DASK_CLUSTER=$(echo $LOGS | sed -En "s/.* The Dask dashboard is available at http:\/\/(.*)."$BAKERY_NAMESPACE".*/\1/p")
 if [ -z $DASK_CLUSTER ]; then
   echo "No dask clusters have been made by this flow yet"
   exit 2
 fi
 echo Cluster name is $DASK_CLUSTER
-PORT=$(echo $LOGS | sed -rn "s/.* The Dask dashboard is available at http:\/\/.*."$BAKERY_NAMESPACE"\:([0-9]+).*/\1/p")
+PORT=$(echo $LOGS | sed -En "s/.* The Dask dashboard is available at http:\/\/.*."$BAKERY_NAMESPACE"\:([0-9]+).*/\1/p")
 echo PORT IS $PORT
 kubectl port-forward -n $BAKERY_NAMESPACE svc/$DASK_CLUSTER 8787 > /dev/null 2>&1 &
 K8S_PID=$!
