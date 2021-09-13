@@ -9,7 +9,7 @@ resource "azurerm_kubernetes_cluster" "bakery_cluster" {
     max_count           = 100
     min_count           = 1
     vm_size             = "standard_d4_v4"
-    os_disk_size_gb     = 30
+    os_disk_size_gb     = 512
     enable_auto_scaling = true
   }
 
