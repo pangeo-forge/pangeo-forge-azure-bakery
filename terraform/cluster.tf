@@ -5,12 +5,12 @@ resource "azurerm_kubernetes_cluster" "bakery_cluster" {
   dns_prefix          = "${var.identifier}-bakery-cluster"
 
   default_node_pool {
-    name                = "system"
-    max_count           = null
-    min_count           = null
-    node_count          = 1
-    vm_size             = "standard_d4_v4"
-    os_disk_size_gb     = 512
+    name            = "system"
+    max_count       = null
+    min_count       = null
+    node_count      = 1
+    vm_size         = "standard_d4_v4"
+    os_disk_size_gb = 512
   }
 
   identity {
@@ -32,12 +32,12 @@ resource "azurerm_kubernetes_cluster" "bakery_cluster" {
 
 resource "azurerm_kubernetes_cluster_node_pool" "compute" {
   kubernetes_cluster_id = azurerm_kubernetes_cluster.bakery_cluster.id
-  name                = "compute"
-  max_count           = 100
-  min_count           = 0
-  vm_size             = "standard_f8s_v2"
-  os_disk_size_gb     = 512
-  enable_auto_scaling = true
+  name                  = "compute"
+  max_count             = 100
+  min_count             = 0
+  vm_size               = "standard_f8s_v2"
+  os_disk_size_gb       = 512
+  enable_auto_scaling   = true
 
   tags = local.tags
 }
