@@ -80,7 +80,7 @@ def register_recipe(recipe: BaseRecipe):
             ],
         },
         labels=json.loads(os.environ["PREFECT__CLOUD__AGENT__LABELS"]),
-        cpu_request="1000m",
+        cpu_request="100m",
         memory_request="3Gi",
     )
     worker_spec = make_pod_spec(
