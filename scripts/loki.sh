@@ -19,6 +19,7 @@ helm repo update
 
 echo "- Deploying the loki stack"
 helm install loki-stack grafana/loki-stack \
+                                --replace \
                                 --create-namespace \
                                 --namespace loki-stack \
                                 --set promtail.enabled=true,loki.persistence.enabled=true,loki.persistence.size=100Gi,grafana.enabled=true
